@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { COLORS } from '@/constants/colors';
 import { glassStyle } from '@/constants/animations';
+import maisonMayssaImg from '@/assets/maison-mayssa.png';
 
 /**
  * Section héro — première impression du site.
@@ -117,7 +118,7 @@ export const HeroSection: React.FC = () => (
             {/* Application Screenshot */}
             <div className="relative w-full rounded-2xl overflow-hidden mb-5 border border-white/10" style={{ height: '240px' }}>
               <motion.img
-                src="/src/assets/maison-mayssa.png"
+                src={maisonMayssaImg}
                 alt="Aperçu Site Maison Mayssa"
                 className="w-full object-cover object-top"
                 initial={{ objectPosition: 'center 0%' }}
