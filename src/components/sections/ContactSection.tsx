@@ -48,16 +48,50 @@ const SOCIAL_LINKS = [
 export const ContactSection: React.FC = () => {
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
   const [sent, setSent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleChange = (id: keyof FormState) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => setForm((prev) => ({ ...prev, [id]: e.target.value }));
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSent(true);
-    setTimeout(() => setSent(false), 3000);
-    setForm(INITIAL_FORM);
+    setIsSubmitting(true);
+    setError(false);
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY, 
+          subject: 'Nouveau message depuis Qamar Web !',
+          from_name: 'Contact Landing Page',
+          name: form.name,
+          email: form.email,
+          message: form.project,
+        }),
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        setSent(true);
+        setForm(INITIAL_FORM);
+        setTimeout(() => setSent(false), 5000);
+      } else {
+        setError(true);
+      }
+    } catch (err) {
+      console.error(err);
+      setError(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -146,17 +180,22 @@ export const ContactSection: React.FC = () => {
 
             <motion.button
               type="submit"
+              disabled={isSubmitting}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              className="w-full py-4 rounded-xl font-semibold text-base flex items-center justify-center gap-2 transition-all"
+              className="w-full py-4 rounded-xl font-semibold text-base flex items-center justify-center gap-2 transition-all disabled:opacity-75 disabled:cursor-wait"
               style={{
-                background: sent ? '#34d399' : COLORS.orange,
+                background: sent ? '#34d399' : error ? '#ef4444' : COLORS.orange,
                 color: COLORS.darkBlue,
-                boxShadow: `0 8px 32px ${sent ? 'rgba(52,211,153,0.35)' : 'rgba(249,177,122,0.4)'}`,
+                boxShadow: `0 8px 32px ${sent ? 'rgba(52,211,153,0.35)' : error ? 'rgba(239,68,68,0.35)' : 'rgba(249,177,122,0.4)'}`,
               }}
             >
-              {sent ? (
+              {isSubmitting ? (
+                <span className="animate-pulse">Envoi en cours...</span>
+              ) : sent ? (
                 <span>✓ Message envoyé avec succès !</span>
+              ) : error ? (
+                <span>⚠️ Erreur, veuillez réessayer</span>
               ) : (
                 <span className="flex items-center gap-2">
                   <span>Envoyer la demande</span>
