@@ -2,27 +2,32 @@
 
 /* ─── Global selection & scrollbar ──────────────────────────────────────── */
 ::selection {
-  background: rgba(249, 177, 122, 0.3);
-  color: #fff;
+  background: rgba(0, 122, 255, 0.2);
+  color: #1d1d1f;
 }
 
 ::-webkit-scrollbar {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #2d3250;
+  background: #f5f5f7;
 }
 ::-webkit-scrollbar-thumb {
-  background: #424769;
+  background: #c7c7cc;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #f9b17a;
+  background: #007aff;
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: rgba(103, 111, 157, 0.6) !important;
+  color: rgba(29, 29, 31, 0.5);
+}
+
+html.dark input::placeholder,
+html.dark textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
 }
 
 /* ─── Typography ─────────────────────────────────────────────────────────── */
@@ -92,7 +97,7 @@ body {
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(0.3270 0.0536 275.8126);
+  --background: oklch(0.97 0.002 264);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);

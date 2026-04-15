@@ -1,35 +1,33 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, ChevronRight, ArrowRight, ExternalLink } from 'lucide-react';
-import { COLORS } from '@/constants/colors';
-import { glassStyle } from '@/constants/animations';
+import { getGlassStyle } from '@/constants/colors';
+import type { ThemeTokens } from '@/constants/colors';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { projects } from '@/data/projects';
+import { useTheme } from '@/context/ThemeContext';
 import type { Project } from '@/types';
 
 const VISIBLE_COUNT = 3;
 
-// ─── Project Card ─────────────────────────────────────────────────────────────
-
 interface ProjectCardProps {
   project: Project;
-  index: number;
   isHovered: boolean;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
+  t: ThemeTokens;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
   project,
-  index,
   isHovered,
   onMouseEnter,
   onMouseLeave,
+  t,
 }) => {
   const cardContent = (
     <>
-      {/* Background: image si dispo, sinon gradient */}
       {project.image ? (
         <img
           src={project.image}
@@ -39,7 +37,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         />
       ) : null}
 
-      {/* Overlay sombre pour lisibilité */}
       <div
         className="absolute inset-0"
         style={{
@@ -49,28 +46,26 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         }}
       />
 
-      {/* Content */}
       <div className="relative p-8 h-full flex flex-col justify-between" style={{ minHeight: 280 }}>
         <div className="text-5xl">{project.emoji}</div>
         <div>
           <div
             className="text-xs font-semibold tracking-widest uppercase mb-2 px-3 py-1 rounded-full inline-block"
-            style={{ background: 'rgba(249,177,122,0.2)', color: COLORS.orange }}
+            style={{ background: t.projectChipBg, color: t.accent }}
           >
             {project.type}
           </div>
           <div className="flex items-center gap-2">
-            <h3 className="text-2xl font-bold" style={{ color: COLORS.white }}>
+            <h3 className="text-2xl font-bold" style={{ color: t.textOnImage }}>
               {project.name}
             </h3>
             {project.url && (
-              <ExternalLink size={16} style={{ color: 'rgba(255,255,255,0.5)' }} />
+              <ExternalLink size={16} style={{ color: t.textOnImageFaint }} />
             )}
           </div>
         </div>
       </div>
 
-      {/* Hover overlay */}
       <AnimatePresence>
         {isHovered && (
           <motion.div
@@ -78,13 +73,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="absolute inset-0 flex items-center justify-center rounded-2xl"
-            style={{ background: 'rgba(45,50,80,0.75)', backdropFilter: 'blur(4px)' }}
+            style={{ background: t.overlayScrim, backdropFilter: 'blur(4px)' }}
           >
             <motion.div
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
               className="px-6 py-3 rounded-full font-semibold flex items-center gap-2"
-              style={{ background: COLORS.orange, color: COLORS.darkBlue }}
+              style={{ background: t.accent, color: t.onAccent }}
             >
               <span>{project.url ? 'Voir le site' : 'Voir le projet'}</span>
               <ArrowRight size={16} />
@@ -100,14 +95,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     style: {
       background: project.gradient,
       minHeight: 280,
-      border: '1px solid rgba(103,111,157,0.2)',
+      border: `1px solid ${t.borderSubtle}`,
       cursor: 'pointer',
     } as React.CSSProperties,
     onMouseEnter,
     onMouseLeave,
   };
 
-  // Carte cliquable si un URL est fourni
   if (project.url) {
     return (
       <a
@@ -129,9 +123,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   );
 };
 
-// ─── Section ─────────────────────────────────────────────────────────────────
-
 export const ProjectsSection: React.FC = () => {
+  const { tokens: t } = useTheme();
+  const glass = getGlassStyle(t);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const maxIdx = Math.max(0, projects.length - VISIBLE_COUNT);
@@ -143,13 +137,12 @@ export const ProjectsSection: React.FC = () => {
     <section
       id="projets"
       className="py-24 relative overflow-hidden"
-      style={{ background: COLORS.midBlue }}
+      style={{ background: t.canvas }}
     >
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background:
-            'radial-gradient(ellipse at 100% 50%, rgba(249,177,122,0.06) 0%, transparent 60%)',
+          background: `radial-gradient(ellipse at 100% 50%, ${t.radialAccent} 0%, transparent 60%)`,
         }}
       />
 
@@ -174,24 +167,23 @@ export const ProjectsSection: React.FC = () => {
                 <ProjectCard
                   key={project.name}
                   project={project}
-                  index={i}
                   isHovered={hoveredIdx === i}
                   onMouseEnter={() => setHoveredIdx(i)}
                   onMouseLeave={() => setHoveredIdx(null)}
+                  t={t}
                 />
               ))}
             </motion.div>
           </div>
 
-          {/* Controls */}
           <div className="flex items-center justify-center gap-4 mt-8">
             <button
               onClick={handlePrev}
               disabled={currentIdx === 0}
               className="w-12 h-12 rounded-full flex items-center justify-center transition-all"
               style={{
-                ...glassStyle,
-                color: currentIdx === 0 ? 'rgba(103,111,157,0.4)' : COLORS.white,
+                ...glass,
+                color: currentIdx === 0 ? t.textDisabled : t.ink,
                 opacity: currentIdx === 0 ? 0.5 : 1,
               }}
               aria-label="Projet précédent"
@@ -206,7 +198,7 @@ export const ProjectsSection: React.FC = () => {
                   onClick={() => setCurrentIdx(i)}
                   className="h-2 rounded-full transition-all duration-200"
                   style={{
-                    background: i === currentIdx ? COLORS.orange : 'rgba(103,111,157,0.4)',
+                    background: i === currentIdx ? t.accent : t.projectNavInactive,
                     width: i === currentIdx ? 24 : 8,
                   }}
                   aria-label={`Groupe de projets ${i + 1}`}
@@ -219,8 +211,8 @@ export const ProjectsSection: React.FC = () => {
               disabled={currentIdx === maxIdx}
               className="w-12 h-12 rounded-full flex items-center justify-center transition-all"
               style={{
-                ...glassStyle,
-                color: currentIdx === maxIdx ? 'rgba(103,111,157,0.4)' : COLORS.white,
+                ...glass,
+                color: currentIdx === maxIdx ? t.textDisabled : t.ink,
                 opacity: currentIdx === maxIdx ? 0.5 : 1,
               }}
               aria-label="Projet suivant"

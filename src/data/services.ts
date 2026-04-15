@@ -1,5 +1,5 @@
 import { Globe, Layers, Smartphone, Zap, BarChart2 } from 'lucide-react';
-import { COLORS } from '@/constants/colors';
+import { USE_THEME_ACCENT } from '@/constants/colors';
 import type { ServiceDetail } from '@/types';
 
 export const services: ServiceDetail[] = [
@@ -8,7 +8,7 @@ export const services: ServiceDetail[] = [
     icon: Globe,
     title: 'Création de sites web',
     desc: 'Sites modernes, rapides et optimisés pour convertir vos visiteurs en clients.',
-    color: COLORS.orange,
+    color: USE_THEME_ACCENT,
     tagline: 'Votre vitrine digitale, réinventée.',
     longDesc:
       "Un site web professionnel est bien plus qu'une simple présence en ligne — c'est votre meilleur commercial. Nous concevons des sites qui captivent, convainquent et convertissent, en combinant design premium, performance technique et stratégie de contenu pensée pour votre audience.",

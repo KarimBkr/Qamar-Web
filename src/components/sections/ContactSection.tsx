@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { User, Mail, FileText, ArrowRight, Twitter, Linkedin, Instagram } from 'lucide-react';
-import { COLORS } from '@/constants/colors';
-import { fadeUp, glassStyle } from '@/constants/animations';
+import { getGlassStyle } from '@/constants/colors';
+import { fadeUp } from '@/constants/animations';
+import { useTheme } from '@/context/ThemeContext';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 
 interface FormState {
@@ -17,12 +18,6 @@ const INPUT_FIELDS = [
   { id: 'name' as const, label: 'Votre nom', placeholder: 'Jean Dupont', icon: User, type: 'text' },
   { id: 'email' as const, label: 'Email professionnel', placeholder: 'jean@entreprise.com', icon: Mail, type: 'email' },
 ] as const;
-
-const inputBaseStyle: React.CSSProperties = {
-  background: 'rgba(45,50,80,0.6)',
-  border: '1px solid rgba(103,111,157,0.3)',
-  color: COLORS.white,
-};
 
 const TiktokIcon = ({ size = 20 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -46,6 +41,17 @@ const SOCIAL_LINKS = [
 ];
 
 export const ContactSection: React.FC = () => {
+  const { tokens: t } = useTheme();
+  const glass = getGlassStyle(t);
+  const inputBaseStyle = useMemo<React.CSSProperties>(
+    () => ({
+      background: t.surface,
+      border: `1px solid ${t.inputBorderBlur}`,
+      color: t.ink,
+    }),
+    [t.surface, t.inputBorderBlur, t.ink]
+  );
+
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
   const [sent, setSent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -68,7 +74,7 @@ export const ContactSection: React.FC = () => {
           Accept: 'application/json',
         },
         body: JSON.stringify({
-          access_key: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY, 
+          access_key: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY,
           subject: 'Nouveau message depuis Qamar Web !',
           from_name: 'Contact Landing Page',
           name: form.name,
@@ -78,7 +84,7 @@ export const ContactSection: React.FC = () => {
       });
 
       const result = await response.json();
-      
+
       if (result.success) {
         setSent(true);
         setForm(INITIAL_FORM);
@@ -95,10 +101,12 @@ export const ContactSection: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-24 relative" style={{ background: COLORS.darkBlue }}>
+    <section id="contact" className="py-24 relative" style={{ background: t.canvas }}>
       <div
         className="absolute inset-0 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse at 50% 100%, rgba(249,177,122,0.08) 0%, transparent 60%)' }}
+        style={{
+          background: `radial-gradient(ellipse at 50% 100%, ${t.radialAccent} 0%, transparent 60%)`,
+        }}
       />
 
       <div className="max-w-3xl mx-auto px-6 relative">
@@ -106,14 +114,18 @@ export const ContactSection: React.FC = () => {
           <div className="text-center mb-12">
             <span
               className="inline-block text-xs font-semibold tracking-widest uppercase mb-4 px-4 py-2 rounded-full"
-              style={{ color: COLORS.orange, background: 'rgba(249,177,122,0.12)', border: '1px solid rgba(249,177,122,0.25)' }}
+              style={{
+                color: t.accent,
+                background: t.accentSoft,
+                border: `1px solid ${t.accentBorder}`,
+              }}
             >
               Contact
             </span>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: COLORS.white }}>
+            <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: t.ink }}>
               Prêt à lancer votre projet ?
             </h2>
-            <p className="text-base" style={{ color: COLORS.lightBlue }}>
+            <p className="text-base" style={{ color: t.muted }}>
               Parlez-nous de votre projet. Nous vous répondons sous 24h.
             </p>
           </div>
@@ -125,18 +137,18 @@ export const ContactSection: React.FC = () => {
             custom={0.1}
             onSubmit={handleSubmit}
             className="p-8 rounded-3xl space-y-5"
-            style={{ ...glassStyle, boxShadow: '0 24px 80px rgba(0,0,0,0.3)' }}
+            style={{ ...glass, boxShadow: t.shadowLg }}
           >
             {INPUT_FIELDS.map((field) => (
               <div key={field.id}>
-                <label className="block text-sm font-medium mb-2" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                <label className="block text-sm font-medium mb-2" style={{ color: t.textLabel }}>
                   {field.label}
                 </label>
                 <div className="relative">
                   <field.icon
                     size={16}
                     className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"
-                    style={{ color: COLORS.lightBlue }}
+                    style={{ color: t.muted }}
                   />
                   <input
                     type={field.type}
@@ -146,23 +158,22 @@ export const ContactSection: React.FC = () => {
                     required
                     className="w-full py-3.5 pl-11 pr-4 rounded-xl text-sm outline-none transition-all"
                     style={inputBaseStyle}
-                    onFocus={(e) => (e.currentTarget.style.borderColor = COLORS.orange)}
-                    onBlur={(e) => (e.currentTarget.style.borderColor = 'rgba(103,111,157,0.3)')}
+                    onFocus={(e) => (e.currentTarget.style.borderColor = t.accent)}
+                    onBlur={(e) => (e.currentTarget.style.borderColor = t.inputBorderBlur)}
                   />
                 </div>
               </div>
             ))}
 
-            {/* Textarea */}
             <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: 'rgba(255,255,255,0.8)' }}>
+              <label className="block text-sm font-medium mb-2" style={{ color: t.textLabel }}>
                 Décrivez votre projet
               </label>
               <div className="relative">
                 <FileText
                   size={16}
                   className="absolute left-4 top-4 pointer-events-none"
-                  style={{ color: COLORS.lightBlue }}
+                  style={{ color: t.muted }}
                 />
                 <textarea
                   value={form.project}
@@ -172,8 +183,8 @@ export const ContactSection: React.FC = () => {
                   rows={4}
                   className="w-full py-3.5 pl-11 pr-4 rounded-xl text-sm outline-none transition-all resize-none"
                   style={inputBaseStyle}
-                  onFocus={(e) => (e.currentTarget.style.borderColor = COLORS.orange)}
-                  onBlur={(e) => (e.currentTarget.style.borderColor = 'rgba(103,111,157,0.3)')}
+                  onFocus={(e) => (e.currentTarget.style.borderColor = t.accent)}
+                  onBlur={(e) => (e.currentTarget.style.borderColor = t.inputBorderBlur)}
                 />
               </div>
             </div>
@@ -185,9 +196,11 @@ export const ContactSection: React.FC = () => {
               whileTap={{ scale: 0.97 }}
               className="w-full py-4 rounded-xl font-semibold text-base flex items-center justify-center gap-2 transition-all disabled:opacity-75 disabled:cursor-wait"
               style={{
-                background: sent ? '#34d399' : error ? '#ef4444' : COLORS.orange,
-                color: COLORS.darkBlue,
-                boxShadow: `0 8px 32px ${sent ? 'rgba(52,211,153,0.35)' : error ? 'rgba(239,68,68,0.35)' : 'rgba(249,177,122,0.4)'}`,
+                background: sent ? t.success : error ? t.danger : t.accent,
+                color: t.onAccent,
+                boxShadow: `0 8px 32px ${
+                  sent ? 'rgba(52,199,89,0.35)' : error ? 'rgba(255,59,48,0.35)' : t.accentGlow
+                }`,
               }}
             >
               {isSubmitting ? (
@@ -206,14 +219,13 @@ export const ContactSection: React.FC = () => {
           </motion.form>
         </AnimatedSection>
 
-        {/* Social Links Form Footer */}
         <AnimatedSection>
           <motion.div
             variants={fadeUp}
             custom={0.2}
             className="mt-16 flex flex-col items-center gap-6"
           >
-            <p className="text-sm font-medium tracking-wide uppercase" style={{ color: 'rgba(255,255,255,0.4)' }}>
+            <p className="text-sm font-medium tracking-wide uppercase" style={{ color: t.textTertiary }}>
               Ou contactez-nous via
             </p>
             <div className="flex items-center gap-4">
@@ -225,18 +237,18 @@ export const ContactSection: React.FC = () => {
                   rel="noopener noreferrer"
                   className="w-12 h-12 rounded-full flex items-center justify-center transition-all hover:-translate-y-1"
                   style={{
-                    background: 'rgba(45,50,80,0.6)',
-                    border: '1px solid rgba(103,111,157,0.3)',
-                    color: COLORS.white,
+                    background: t.fillSubtle,
+                    border: `1px solid ${t.borderMedium}`,
+                    color: t.ink,
                   }}
                   aria-label={`Visiter notre ${social.name}`}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = COLORS.orange;
-                    e.currentTarget.style.color = COLORS.orange;
+                    e.currentTarget.style.borderColor = t.accent;
+                    e.currentTarget.style.color = t.accent;
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(103,111,157,0.3)';
-                    e.currentTarget.style.color = COLORS.white;
+                    e.currentTarget.style.borderColor = t.borderMedium;
+                    e.currentTarget.style.color = t.ink;
                   }}
                 >
                   <social.icon size={20} />

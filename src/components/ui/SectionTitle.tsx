@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { COLORS } from '@/constants/colors';
 import { fadeUp } from '@/constants/animations';
+import { useTheme } from '@/context/ThemeContext';
 
 interface SectionTitleProps {
   label: string;
@@ -9,47 +9,43 @@ interface SectionTitleProps {
   subtitle?: string;
 }
 
-/**
- * En-tête de section standardisé : badge label + h2 + sous-titre optionnel.
- * Doit être utilisé à l'intérieur d'un AnimatedSection pour les animations.
- */
-export const SectionTitle: React.FC<SectionTitleProps> = ({
-  label,
-  title,
-  subtitle,
-}) => (
-  <div className="text-center mb-16">
-    <motion.span
-      variants={fadeUp}
-      custom={0}
-      className="inline-block text-xs font-semibold tracking-widest uppercase mb-4 px-4 py-2 rounded-full"
-      style={{
-        color: COLORS.orange,
-        background: 'rgba(249,177,122,0.12)',
-        border: '1px solid rgba(249,177,122,0.25)',
-      }}
-    >
-      {label}
-    </motion.span>
+export const SectionTitle: React.FC<SectionTitleProps> = ({ label, title, subtitle }) => {
+  const { tokens: t } = useTheme();
 
-    <motion.h2
-      variants={fadeUp}
-      custom={0.1}
-      className="text-4xl md:text-5xl font-bold mb-4 leading-tight"
-      style={{ color: COLORS.white }}
-    >
-      {title}
-    </motion.h2>
-
-    {subtitle && (
-      <motion.p
+  return (
+    <div className="text-center mb-16">
+      <motion.span
         variants={fadeUp}
-        custom={0.2}
-        className="text-lg max-w-2xl mx-auto"
-        style={{ color: COLORS.lightBlue }}
+        custom={0}
+        className="inline-block text-xs font-semibold tracking-widest uppercase mb-4 px-4 py-2 rounded-full"
+        style={{
+          color: t.accent,
+          background: t.accentSoft,
+          border: `1px solid ${t.accentBorder}`,
+        }}
       >
-        {subtitle}
-      </motion.p>
-    )}
-  </div>
-);
+        {label}
+      </motion.span>
+
+      <motion.h2
+        variants={fadeUp}
+        custom={0.1}
+        className="text-4xl md:text-5xl font-bold mb-4 leading-tight"
+        style={{ color: t.ink }}
+      >
+        {title}
+      </motion.h2>
+
+      {subtitle && (
+        <motion.p
+          variants={fadeUp}
+          custom={0.2}
+          className="text-lg max-w-2xl mx-auto"
+          style={{ color: t.muted }}
+        >
+          {subtitle}
+        </motion.p>
+      )}
+    </div>
+  );
+};

@@ -14,7 +14,7 @@ import { AboutSection } from '@/components/sections/AboutSection';
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection';
 import { CalendlySection } from '@/components/sections/CalendlySection';
 import { ContactSection } from '@/components/sections/ContactSection';
-import { COLORS } from '@/constants/colors';
+import { useTheme } from '@/context/ThemeContext';
 import type { ServiceDetail } from '@/types';
 
 /**
@@ -22,6 +22,7 @@ import type { ServiceDetail } from '@/types';
  * Responsabilité unique : composer les sections et passer l'état partagé.
  */
 export const QamarWebLanding: React.FC = () => {
+  const { tokens: t } = useTheme();
   const scrolled = useScroll(30);
   const activeSection = useActiveSection();
   const [selectedService, setSelectedService] = useState<ServiceDetail | null>(null);
@@ -37,7 +38,7 @@ export const QamarWebLanding: React.FC = () => {
   return (
     <div
       className="min-h-screen w-full"
-      style={{ background: COLORS.darkBlue, overflowX: 'hidden' }}
+      style={{ background: t.canvas, overflowX: 'hidden' }}
     >
       <ServiceDrawer service={selectedService} onClose={handleDrawerClose} />
       <Navbar scrolled={scrolled} activeSection={activeSection} />

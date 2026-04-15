@@ -1,5 +1,4 @@
 import { Shield, BarChart2, Globe } from 'lucide-react';
-import { COLORS } from '@/constants/colors';
 import type { Plan, Upsell } from '@/types';
 
 export const plans: Plan[] = [
@@ -24,8 +23,8 @@ export const plans: Plan[] = [
     name: 'Business',
     price: '1990€',
     badge: 'Le plus populaire',
-    badgeColor: COLORS.orange,
-    accentColor: COLORS.orange,
+    badgeColor: null,
+    accentColor: '#007AFF',
     features: [
       '5 à 10 pages',
       'UX/UI personnalisé',
