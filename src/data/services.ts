@@ -27,7 +27,11 @@ export const services: ServiceDetail[] = [
       "Formation à l'outil",
     ],
     stack: ['Next.js', 'React', 'Tailwind CSS', 'Contentful', 'Vercel'],
-    caseStudy: { name: 'BioNatura', result: '+240% de leads en 3 mois', emoji: '🌿' },
+    caseStudy: {
+      name: 'Maison Mayssa',
+      result: "E-commerce pâtisserie, trompes l'œil & livraison — Annecy",
+      emoji: '🍰',
+    },
   },
   {
     id: 'sites-business',
@@ -53,7 +57,11 @@ export const services: ServiceDetail[] = [
       'Dashboard analytics',
     ],
     stack: ['Next.js', 'TypeScript', 'HubSpot', 'Google Analytics 4', 'Hotjar'],
-    caseStudy: { name: 'ImmoPro', result: '+300% de leads qualifiés', emoji: '🏡' },
+    caseStudy: {
+      name: 'Water Plomberie',
+      result: 'Vitrine artisan plombier, urgence 24/7 & devis — Annecy',
+      emoji: '🔧',
+    },
   },
   {
     id: 'saas',
@@ -74,7 +82,11 @@ export const services: ServiceDetail[] = [
     ],
     deliverables: ['MVP fonctionnel', 'Documentation API', 'Tests automatisés', 'Pipeline CI/CD'],
     stack: ['React', 'Node.js', 'PostgreSQL', 'Stripe', 'Docker', 'AWS'],
-    caseStudy: { name: 'MedDash', result: '500 utilisateurs en 1 mois', emoji: '🏥' },
+    caseStudy: {
+      name: 'Maison Mayssa',
+      result: "Parcours d'achat, catalogue & commande structurés — maison-mayssa.fr",
+      emoji: '🍰',
+    },
   },
   {
     id: 'mobile',
@@ -100,7 +112,11 @@ export const services: ServiceDetail[] = [
       'Support post-lancement',
     ],
     stack: ['React Native', 'Expo', 'TypeScript', 'Firebase', 'RevenueCat'],
-    caseStudy: { name: 'FoodRush', result: "4,8★ sur l'App Store", emoji: '🍔' },
+    caseStudy: {
+      name: 'Water Plomberie',
+      result: 'Expérience mobile-first, urgence & RDV au premier plan — waterplomberie.pro',
+      emoji: '🔧',
+    },
   },
   {
     id: 'automation',
@@ -126,6 +142,10 @@ export const services: ServiceDetail[] = [
       'Support & maintenance',
     ],
     stack: ['Make', 'Zapier', 'Python', 'n8n', 'Airtable', 'Notion API'],
-    caseStudy: { name: 'TechLab', result: '20h/semaine économisées', emoji: '⚡' },
+    caseStudy: {
+      name: 'Maison Mayssa',
+      result: 'Panier, envoi WhatsApp & précommandes — parcours allégé côté client',
+      emoji: '🍰',
+    },
   },
 ];
