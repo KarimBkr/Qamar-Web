@@ -80,7 +80,17 @@ export const Footer: React.FC = () => (
             Contact
           </div>
           <ul className="space-y-2.5 text-sm" style={{ color: COLORS.lightBlue }}>
-            <li>contact@qamarweb.com</li>
+            <li>
+              <a
+                href="mailto:contact@qamarweb.fr"
+                className="transition-colors hover:underline"
+                style={{ color: 'inherit' }}
+                onMouseEnter={(e) => ((e.target as HTMLElement).style.color = COLORS.orange)}
+                onMouseLeave={(e) => ((e.target as HTMLElement).style.color = COLORS.lightBlue)}
+              >
+                contact@qamarweb.fr
+              </a>
+            </li>
             <li>+33 (0)6 XX XX XX XX</li>
             <li>Paris, France 🇫🇷</li>
           </ul>
