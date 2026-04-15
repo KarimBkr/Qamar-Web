@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { COLORS } from '@/constants/colors';
 import { glassStyle } from '@/constants/animations';
-import maisonMayssaImg from '@/assets/maison-mayssa.png';
+import waterplomberieImg from '@/assets/waterplomberie.png';
 
 /**
  * Section héro — première impression du site.
@@ -111,15 +111,15 @@ export const HeroSection: React.FC = () => (
                 className="flex-1 h-8 rounded-lg mb-0 flex items-center px-4"
                 style={{ background: 'rgba(103,111,157,0.2)' }}
               >
-                <div className="text-[10px] font-medium tracking-wide" style={{ color: 'rgba(255,255,255,0.4)' }}>maison-mayssa.fr</div>
+                <div className="text-[10px] font-medium tracking-wide truncate" style={{ color: 'rgba(255,255,255,0.4)' }}>www.waterplomberie.pro</div>
               </div>
             </div>
 
             {/* Application Screenshot */}
             <div className="relative w-full rounded-2xl overflow-hidden mb-5 border border-white/10" style={{ height: '240px' }}>
               <motion.img
-                src={maisonMayssaImg}
-                alt="Aperçu Site Maison Mayssa"
+                src={waterplomberieImg}
+                alt="Aperçu site WaterPlomberie"
                 className="w-full object-cover object-top"
                 initial={{ objectPosition: 'center 0%' }}
                 animate={{ objectPosition: 'center 15%' }}
