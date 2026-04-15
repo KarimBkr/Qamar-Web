@@ -2,18 +2,18 @@ import type { Testimonial } from '@/types';
 
 export const testimonials: Testimonial[] = [
   {
-    name: 'Sophie M.',
-    role: 'CEO, BioNatura',
-    text: 'Qamar Web a transformé notre présence en ligne. Notre site est devenu notre meilleur commercial. Le résultat dépasse toutes nos espérances !',
+    name: 'Maison Mayssa',
+    role: 'Pâtisserie artisanale & e-commerce — Annecy',
+    text: "Notre site met enfin en valeur nos trompes l'œil et nos gourmandises comme en boutique : parcours d'achat simple, livraison et commande WhatsApp clairs pour nos clients. Une vraie vitrine digitale pour une maison qui joue sur le détail et l'émotion.",
     stars: 5,
-    avatar: 'SM',
+    avatar: 'MM',
   },
   {
-    name: 'Karim B.',
-    role: 'Fondateur, TechLab',
-    text: 'Une équipe exceptionnelle, réactive et très professionnelle. Notre SaaS a été livré en temps et en heure avec une qualité remarquable.',
+    name: 'Hamza DJAFFER',
+    role: 'Water Plomberie — Artisan plombier & chauffagiste, Annecy',
+    text: "Le site met en avant ce qui compte pour nous : urgence 24/7, devis transparent et prise de contact immédiate. Nos clients voient tout de suite nos services et notre zone d'intervention — ça change tout pour une entreprise de dépannage. Design pro, comme sur le terrain.",
     stars: 5,
-    avatar: 'KB',
+    avatar: 'HD',
   },
   {
     name: 'Laura D.',
