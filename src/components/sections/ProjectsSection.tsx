@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ArrowRight, ExternalLink } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowRight, ExternalLink, ChevronDown } from 'lucide-react';
 import { getGlassStyle } from '@/constants/colors';
 import type { ThemeTokens } from '@/constants/colors';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
@@ -11,7 +11,12 @@ import type { Project } from '@/types';
 
 const VISIBLE_COUNT = 3;
 
-interface ProjectCardProps {
+/** Chevauchement entre cartes (style pile Wallet). */
+const STACK_OVERLAP = 40;
+const COLLAPSED_PX = 56;
+const EXPANDED_PX = 252;
+
+interface ProjectCarouselCardProps {
   project: Project;
   isHovered: boolean;
   onMouseEnter: () => void;
@@ -19,7 +24,7 @@ interface ProjectCardProps {
   t: ThemeTokens;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({
+const ProjectCarouselCard: React.FC<ProjectCarouselCardProps> = ({
   project,
   isHovered,
   onMouseEnter,
@@ -59,9 +64,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             <h3 className="text-2xl font-bold" style={{ color: t.textOnImage }}>
               {project.name}
             </h3>
-            {project.url && (
-              <ExternalLink size={16} style={{ color: t.textOnImageFaint }} />
-            )}
+            {project.url && <ExternalLink size={16} style={{ color: t.textOnImageFaint }} />}
           </div>
         </div>
       </div>
@@ -104,24 +107,182 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
   if (project.url) {
     return (
-      <a
-        key={project.name}
-        href={project.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        {...sharedProps}
-      >
+      <a href={project.url} target="_blank" rel="noopener noreferrer" {...sharedProps}>
         {cardContent}
       </a>
     );
   }
 
-  return (
-    <div key={project.name} {...sharedProps}>
-      {cardContent}
+  return <div {...sharedProps}>{cardContent}</div>;
+};
+
+interface ProjectWalletCardProps {
+  project: Project;
+  index: number;
+  isExpanded: boolean;
+  onSelect: () => void;
+  t: ThemeTokens;
+}
+
+const ProjectWalletCard: React.FC<ProjectWalletCardProps> = ({
+  project,
+  index,
+  isExpanded,
+  onSelect,
+  t,
+}) => {
+  const shadow =
+    '0 14px 36px rgba(0,0,0,0.22), 0 4px 12px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.12)';
+
+  const collapsedStrip = (
+    <div
+      className="absolute inset-0 flex items-center justify-between gap-3 px-4"
+      style={{
+        background: project.gradient,
+        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.14)',
+      }}
+    >
+      <div className="flex items-center gap-2.5 min-w-0">
+        <span className="text-xl shrink-0 leading-none" aria-hidden>
+          {project.emoji}
+        </span>
+        <span
+          className="text-sm font-semibold truncate"
+          style={{ color: t.textOnImage }}
+        >
+          {project.name}
+        </span>
+      </div>
+      <ChevronDown size={18} className="shrink-0 opacity-80" style={{ color: t.textOnImageFaint }} aria-hidden />
     </div>
   );
+
+  const expandedBody = (
+    <>
+      {project.image ? (
+        <img
+          src={project.image}
+          alt=""
+          className="absolute inset-0 w-full h-full object-cover object-top"
+          style={{ opacity: 0.9 }}
+        />
+      ) : null}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: project.image
+            ? 'linear-gradient(165deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.75) 100%)'
+            : project.gradient,
+          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1)',
+        }}
+      />
+      <div className="relative h-full flex flex-col justify-between p-5 pt-4">
+        <div className="text-3xl drop-shadow-sm">{project.emoji}</div>
+        <div className="space-y-3">
+          <div
+            className="text-[10px] font-semibold tracking-wider uppercase px-2 py-1 rounded-md inline-block"
+            style={{ background: t.projectChipBg, color: t.accent }}
+          >
+            {project.type}
+          </div>
+          <h3 className="text-lg font-bold leading-tight pr-6" style={{ color: t.textOnImage }}>
+            {project.name}
+          </h3>
+          {project.url ? (
+            <a
+              href={project.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="inline-flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-full w-fit"
+              style={{ background: t.accent, color: t.onAccent }}
+            >
+              <span>Voir le site</span>
+              <ExternalLink size={14} />
+            </a>
+          ) : (
+            <p className="text-xs leading-relaxed" style={{ color: t.textOnImageFaint }}>
+              Projet concept — démo de notre approche design &amp; produit.
+            </p>
+          )}
+        </div>
+      </div>
+    </>
+  );
+
+  return (
+    <motion.article
+      className="relative w-full rounded-[1.75rem] overflow-hidden cursor-pointer select-none border"
+      style={{
+        zIndex: index + 1,
+        marginTop: index === 0 ? 0 : -STACK_OVERLAP,
+        borderColor: t.borderSubtle,
+        boxShadow: shadow,
+      }}
+      initial={false}
+      animate={{
+        height: isExpanded ? EXPANDED_PX : COLLAPSED_PX,
+      }}
+      transition={{ type: 'spring', stiffness: 420, damping: 36 }}
+      onClick={onSelect}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onSelect();
+        }
+      }}
+      role="button"
+      tabIndex={0}
+      aria-expanded={isExpanded}
+      aria-label={`${project.name}, ${project.type}${isExpanded ? ', développé' : ', replié'}. Appuyer pour développer.`}
+    >
+      <AnimatePresence initial={false} mode="wait">
+        {isExpanded ? (
+          <motion.div
+            key="expanded"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="absolute inset-0"
+          >
+            {expandedBody}
+          </motion.div>
+        ) : (
+          <motion.div
+            key="collapsed"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+            className="absolute inset-0"
+          >
+            {collapsedStrip}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.article>
+  );
 };
+
+function ProjectWalletStack({ t }: { t: ThemeTokens }) {
+  const [expandedIdx, setExpandedIdx] = useState(() => Math.max(0, projects.length - 1));
+
+  return (
+    <div className="mx-auto max-w-md pb-4 pt-1">
+      {projects.map((project, i) => (
+        <ProjectWalletCard
+          key={project.name}
+          project={project}
+          index={i}
+          isExpanded={expandedIdx === i}
+          onSelect={() => setExpandedIdx(i)}
+          t={t}
+        />
+      ))}
+    </div>
+  );
+}
 
 export const ProjectsSection: React.FC = () => {
   const { tokens: t } = useTheme();
@@ -155,7 +316,14 @@ export const ProjectsSection: React.FC = () => {
           />
         </AnimatedSection>
 
-        <div className="relative">
+        {/* Pile type Apple Wallet — mobile & tablette */}
+        <div className="lg:hidden">
+          <AnimatedSection>
+            <ProjectWalletStack t={t} />
+          </AnimatedSection>
+        </div>
+
+        <div className="relative hidden lg:block">
           <div className="overflow-hidden">
             <motion.div
               className="flex gap-6"
@@ -164,7 +332,7 @@ export const ProjectsSection: React.FC = () => {
               style={{ width: `${(projects.length / VISIBLE_COUNT) * 100}%` }}
             >
               {projects.map((project, i) => (
-                <ProjectCard
+                <ProjectCarouselCard
                   key={project.name}
                   project={project}
                   isHovered={hoveredIdx === i}
@@ -178,6 +346,7 @@ export const ProjectsSection: React.FC = () => {
 
           <div className="flex items-center justify-center gap-4 mt-8">
             <button
+              type="button"
               onClick={handlePrev}
               disabled={currentIdx === 0}
               className="w-12 h-12 rounded-full flex items-center justify-center transition-all"
@@ -194,6 +363,7 @@ export const ProjectsSection: React.FC = () => {
             <div className="flex gap-2">
               {Array.from({ length: maxIdx + 1 }).map((_, i) => (
                 <button
+                  type="button"
                   key={`dot-${i}`}
                   onClick={() => setCurrentIdx(i)}
                   className="h-2 rounded-full transition-all duration-200"
@@ -207,6 +377,7 @@ export const ProjectsSection: React.FC = () => {
             </div>
 
             <button
+              type="button"
               onClick={handleNext}
               disabled={currentIdx === maxIdx}
               className="w-12 h-12 rounded-full flex items-center justify-center transition-all"
