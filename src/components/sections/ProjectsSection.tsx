@@ -6,7 +6,7 @@ import type { ThemeTokens } from '@/constants/colors';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { projects } from '@/data/projects';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/use-theme';
 import type { Project } from '@/types';
 
 const VISIBLE_COUNT = 3;
@@ -146,14 +146,16 @@ const ProjectWalletCard: React.FC<ProjectWalletCardProps> = ({
         <span className="text-xl shrink-0 leading-none" aria-hidden>
           {project.emoji}
         </span>
-        <span
-          className="text-sm font-semibold truncate"
-          style={{ color: t.textOnImage }}
-        >
+        <span className="text-sm font-semibold truncate" style={{ color: t.textOnImage }}>
           {project.name}
         </span>
       </div>
-      <ChevronDown size={18} className="shrink-0 opacity-80" style={{ color: t.textOnImageFaint }} aria-hidden />
+      <ChevronDown
+        size={18}
+        className="shrink-0 opacity-80"
+        style={{ color: t.textOnImageFaint }}
+        aria-hidden
+      />
     </div>
   );
 
@@ -193,7 +195,7 @@ const ProjectWalletCard: React.FC<ProjectWalletCardProps> = ({
               href={project.url}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
+              onClick={e => e.stopPropagation()}
               className="inline-flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-full w-fit"
               style={{ background: t.accent, color: t.onAccent }}
             >
@@ -225,7 +227,7 @@ const ProjectWalletCard: React.FC<ProjectWalletCardProps> = ({
       }}
       transition={{ type: 'spring', stiffness: 420, damping: 36 }}
       onClick={onSelect}
-      onKeyDown={(e) => {
+      onKeyDown={e => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           onSelect();
@@ -291,8 +293,8 @@ export const ProjectsSection: React.FC = () => {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const maxIdx = Math.max(0, projects.length - VISIBLE_COUNT);
 
-  const handlePrev = () => setCurrentIdx((p) => Math.max(0, p - 1));
-  const handleNext = () => setCurrentIdx((p) => Math.min(maxIdx, p + 1));
+  const handlePrev = () => setCurrentIdx(p => Math.max(0, p - 1));
+  const handleNext = () => setCurrentIdx(p => Math.min(maxIdx, p + 1));
 
   return (
     <section

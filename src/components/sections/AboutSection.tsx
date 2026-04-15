@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { getGlassStyle } from '@/constants/colors';
 import { fadeUp } from '@/constants/animations';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/use-theme';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import type { Tech } from '@/types';
 
@@ -22,7 +22,7 @@ const TECH_STACK: Tech[] = [
 ];
 
 const STATS: [string, string][] = [
-  ["5+", "Ans d'expérience"],
+  ['5+', "Ans d'expérience"],
   ['50+', 'Projets livrés'],
   ['98%', 'Satisfaction client'],
 ];
@@ -55,15 +55,18 @@ export const AboutSection: React.FC = () => {
                 À propos
               </span>
 
-              <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight" style={{ color: t.ink }}>
+              <h2
+                className="text-4xl md:text-5xl font-bold mb-6 leading-tight"
+                style={{ color: t.ink }}
+              >
                 <span>Notre expertise technique, </span>
                 <span style={{ color: t.accent }}>à votre service</span>
               </h2>
 
               <p className="text-base leading-relaxed mb-5" style={{ color: t.muted }}>
                 Nous maîtrisons un large spectre de technologies web, du front au back-end, ce qui
-                nous permet de choisir en toute liberté les outils les plus adaptés à votre
-                projet — plutôt que de vous faire entrer dans un cadre technique figé.
+                nous permet de choisir en toute liberté les outils les plus adaptés à votre projet —
+                plutôt que de vous faire entrer dans un cadre technique figé.
               </p>
               <p className="text-base leading-relaxed mb-8" style={{ color: t.muted }}>
                 Notre équipe s'adapte à votre contexte, à vos enjeux métier et à vos contraintes
@@ -98,12 +101,15 @@ export const AboutSection: React.FC = () => {
                 className="rounded-3xl p-8 relative overflow-hidden"
                 style={{ ...glass, boxShadow: t.shadowHeroCard }}
               >
-                <p className="text-xs font-semibold tracking-widest uppercase mb-6" style={{ color: t.accent }}>
+                <p
+                  className="text-xs font-semibold tracking-widest uppercase mb-6"
+                  style={{ color: t.accent }}
+                >
                   Technologies &amp; outils
                 </p>
 
                 <div className="flex flex-wrap gap-3">
-                  {TECH_STACK.map((tech) => (
+                  {TECH_STACK.map(tech => (
                     <motion.div
                       key={tech.label}
                       whileHover={{ scale: 1.06, transition: { duration: 0.15 } }}
@@ -130,8 +136,8 @@ export const AboutSection: React.FC = () => {
                   <p className="text-sm leading-relaxed" style={{ color: t.textSecondary }}>
                     <span className="font-semibold" style={{ color: t.accent }}>
                       Notre philosophie :
-                    </span>
-                    {' '}nous choisissons la technologie en fonction de votre besoin, pas l'inverse.
+                    </span>{' '}
+                    nous choisissons la technologie en fonction de votre besoin, pas l'inverse.
                     Chaque projet mérite l'architecture qui lui correspond vraiment.
                   </p>
                 </div>

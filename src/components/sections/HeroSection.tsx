@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 import { getGlassStyle } from '@/constants/colors';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/use-theme';
 import waterplomberieImg from '@/assets/waterplomberie.png';
 
 export const HeroSection: React.FC = () => {
@@ -100,7 +100,7 @@ export const HeroSection: React.FC = () => {
               style={{ ...glass, boxShadow: t.shadowHeroCard }}
             >
               <div className="flex items-center gap-3 mb-5">
-                {['#ff5f57', '#febc2e', '#28c840'].map((color) => (
+                {['#ff5f57', '#febc2e', '#28c840'].map(color => (
                   <div key={color} className="w-3 h-3 rounded-full" style={{ background: color }} />
                 ))}
                 <div
@@ -126,7 +126,12 @@ export const HeroSection: React.FC = () => {
                   className="w-full object-cover object-top"
                   initial={{ objectPosition: 'center 0%' }}
                   animate={{ objectPosition: 'center 15%' }}
-                  transition={{ duration: 10, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
+                  transition={{
+                    duration: 10,
+                    repeat: Infinity,
+                    repeatType: 'reverse',
+                    ease: 'easeInOut',
+                  }}
                 />
                 <div
                   className="absolute inset-0 pointer-events-none"

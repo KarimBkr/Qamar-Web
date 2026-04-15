@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Twitter, Linkedin, Github, Instagram } from 'lucide-react';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/use-theme';
 import { NAV_LINKS, NAV_SECTION_MAP } from '@/constants/navigation';
 
 const SOCIAL_ICONS = [Twitter, Linkedin, Github, Instagram];
@@ -54,14 +54,14 @@ export const Footer: React.FC = () => {
               Liens rapides
             </div>
             <ul className="space-y-2.5">
-              {NAV_LINKS.map((link) => (
+              {NAV_LINKS.map(link => (
                 <li key={link}>
                   <a
                     href={`#${NAV_SECTION_MAP[link]}`}
                     className="text-sm transition-colors"
                     style={{ color: t.muted }}
-                    onMouseEnter={(e) => ((e.target as HTMLElement).style.color = t.accent)}
-                    onMouseLeave={(e) => ((e.target as HTMLElement).style.color = t.muted)}
+                    onMouseEnter={e => ((e.target as HTMLElement).style.color = t.accent)}
+                    onMouseLeave={e => ((e.target as HTMLElement).style.color = t.muted)}
                   >
                     {link}
                   </a>
@@ -83,8 +83,8 @@ export const Footer: React.FC = () => {
                   href="mailto:contact@qamarweb.fr"
                   className="transition-colors hover:underline"
                   style={{ color: 'inherit' }}
-                  onMouseEnter={(e) => ((e.target as HTMLElement).style.color = t.accent)}
-                  onMouseLeave={(e) => ((e.target as HTMLElement).style.color = t.muted)}
+                  onMouseEnter={e => ((e.target as HTMLElement).style.color = t.accent)}
+                  onMouseLeave={e => ((e.target as HTMLElement).style.color = t.muted)}
                 >
                   contact@qamarweb.fr
                 </a>
@@ -110,14 +110,14 @@ export const Footer: React.FC = () => {
             © {new Date().getFullYear()} Qamar Web — Tous droits réservés.
           </p>
           <div className="flex gap-6">
-            {LEGAL_LINKS.map((item) => (
+            {LEGAL_LINKS.map(item => (
               <a
                 key={item}
                 href="#"
                 className="text-xs transition-colors"
                 style={{ color: t.footerLegal }}
-                onMouseEnter={(e) => ((e.target as HTMLElement).style.color = t.accent)}
-                onMouseLeave={(e) => ((e.target as HTMLElement).style.color = t.footerLegal)}
+                onMouseEnter={e => ((e.target as HTMLElement).style.color = t.accent)}
+                onMouseLeave={e => ((e.target as HTMLElement).style.color = t.footerLegal)}
               >
                 {item}
               </a>

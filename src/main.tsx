@@ -27,7 +27,7 @@ const addBrokenImageHandler = () => {
         }
       }
     },
-    true,
+    true
   );
 };
 
@@ -40,5 +40,5 @@ import App from './App.tsx';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <App />
-  </StrictMode>,
+  </StrictMode>
 );

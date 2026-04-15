@@ -13,14 +13,14 @@ export function useActiveSection(): string {
     const observers: IntersectionObserver[] = [];
 
     const onIntersect = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
+      entries.forEach(entry => {
         if (entry.isIntersecting) {
           setActiveSection(entry.target.id);
         }
       });
     };
 
-    sectionIds.forEach((id) => {
+    sectionIds.forEach(id => {
       const el = document.getElementById(id);
       if (!el) return;
 
@@ -32,7 +32,7 @@ export function useActiveSection(): string {
       observers.push(observer);
     });
 
-    return () => observers.forEach((obs) => obs.disconnect());
+    return () => observers.forEach(obs => obs.disconnect());
   }, []);
 
   return activeSection;

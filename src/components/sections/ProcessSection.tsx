@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { getGlassStyle } from '@/constants/colors';
 import { fadeUp } from '@/constants/animations';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/use-theme';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { processSteps } from '@/data/process';
@@ -25,7 +25,12 @@ export const ProcessSection: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
           {processSteps.map((step, i) => (
             <AnimatedSection key={step.num}>
-              <motion.div variants={fadeUp} custom={i * 0.1} className="relative p-7 rounded-2xl" style={glass}>
+              <motion.div
+                variants={fadeUp}
+                custom={i * 0.1}
+                className="relative p-7 rounded-2xl"
+                style={glass}
+              >
                 {i < processSteps.length - 1 && (
                   <div
                     className="hidden lg:block absolute top-10 -right-3 w-6 h-px z-10"

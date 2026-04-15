@@ -1,18 +1,8 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { THEME_DARK, THEME_LIGHT, type ThemeTokens } from '@/constants/colors';
-
-export type ThemeMode = 'light' | 'dark';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { THEME_DARK, THEME_LIGHT } from '@/constants/colors';
+import { ThemeContext, type ThemeMode } from '@/context/theme-context';
 
 const STORAGE_KEY = 'qamar-theme';
-
-type ThemeContextValue = {
-  mode: ThemeMode;
-  setMode: (m: ThemeMode) => void;
-  toggleTheme: () => void;
-  tokens: ThemeTokens;
-};
-
-const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 function readInitialMode(): ThemeMode {
   try {
@@ -35,7 +25,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, []);
 
   const toggleTheme = useCallback(() => {
-    setModeState((prev) => (prev === 'light' ? 'dark' : 'light'));
+    setModeState(prev => (prev === 'light' ? 'dark' : 'light'));
   }, []);
 
   useEffect(() => {
@@ -51,16 +41,8 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const value = useMemo(
     () => ({ mode, setMode, toggleTheme, tokens }),
-    [mode, setMode, toggleTheme, tokens],
+    [mode, setMode, toggleTheme, tokens]
   );
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 };
-
-export function useTheme(): ThemeContextValue {
-  const ctx = useContext(ThemeContext);
-  if (!ctx) {
-    throw new Error('useTheme doit être utilisé dans un ThemeProvider');
-  }
-  return ctx;
-}

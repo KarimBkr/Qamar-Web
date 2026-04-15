@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { getGlassStyle } from '@/constants/colors';
 import { fadeUp } from '@/constants/animations';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/use-theme';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 
 const BOOKING_STEPS = [
@@ -22,7 +22,6 @@ const BOOKING_STEPS = [
     desc: 'Devis détaillé sous 24h, personnalisé selon vos besoins.',
   },
 ] as const;
-
 
 export const CalendlySection: React.FC = () => {
   const { tokens: t } = useTheme();
@@ -81,7 +80,7 @@ export const CalendlySection: React.FC = () => {
 
         <AnimatedSection>
           <motion.div variants={fadeUp} custom={0.25} className="grid md:grid-cols-3 gap-5 mb-10">
-            {BOOKING_STEPS.map((item) => (
+            {BOOKING_STEPS.map(item => (
               <div key={item.title} className="p-6 rounded-2xl text-center" style={glass}>
                 <span className="text-3xl block mb-3">{item.emoji}</span>
                 <h3 className="text-base font-bold mb-2" style={{ color: t.ink }}>
@@ -99,9 +98,10 @@ export const CalendlySection: React.FC = () => {
           <motion.div
             variants={fadeUp}
             custom={0.3}
-            className="rounded-3xl overflow-hidden relative"
+            className="rounded-3xl overflow-hidden relative isolate"
             style={{
-              ...glass,
+              /* Pas de backdrop-filterici : sur Safari/WebKit ça peut masquer l’iframe Calendly. */
+              background: t.surface,
               boxShadow: t.shadowLg,
               border: `1px solid ${t.accentBorder}`,
             }}
@@ -112,9 +112,9 @@ export const CalendlySection: React.FC = () => {
               width="100%"
               height="700"
               frameBorder="0"
-              style={{ display: 'block', minWidth: 0 }}
-              loading="lazy"
-              allow="payment"
+              style={{ display: 'block', minWidth: 0, background: t.surface }}
+              loading="eager"
+              allow="camera; microphone; fullscreen; payment; clipboard-write"
             />
           </motion.div>
         </AnimatedSection>
@@ -134,8 +134,8 @@ export const CalendlySection: React.FC = () => {
               style={{ color: t.accent, textDecoration: 'underline' }}
             >
               Calendly
-            </a>
-            {' '}· Aucun compte requis · Annulation gratuite jusqu'à 24h avant
+            </a>{' '}
+            · Aucun compte requis · Annulation gratuite jusqu'à 24h avant
           </motion.p>
         </AnimatedSection>
       </div>

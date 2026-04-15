@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, CheckCircle, CheckSquare, Lightbulb, ArrowUpRight } from 'lucide-react';
-import { USE_THEME_ACCENT } from '@/constants/colors';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/use-theme';
+import { serviceAccentColor } from '@/lib/serviceAccent';
 import { drawerProcessSteps } from '@/data/process';
 import type { ServiceDetail } from '@/types';
 
@@ -11,13 +11,9 @@ interface ServiceDrawerProps {
   onClose: () => void;
 }
 
-function serviceColor(service: ServiceDetail, accent: string): string {
-  return service.color === USE_THEME_ACCENT ? accent : service.color;
-}
-
 export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({ service, onClose }) => {
   const { tokens: t } = useTheme();
-  const c = service ? serviceColor(service, t.accent) : t.accent;
+  const c = service ? serviceAccentColor(service, t.accent) : t.accent;
 
   useEffect(() => {
     document.body.style.overflow = service ? 'hidden' : '';
@@ -52,7 +48,7 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({ service, onClose }
               borderLeft: `1px solid ${t.borderMedium}`,
               boxShadow: t.drawerShadow,
             }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
           >
             <div
               className="sticky top-0 z-10 flex items-center justify-between px-8 py-5"
@@ -92,7 +88,10 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({ service, onClose }
                   <Lightbulb size={12} />
                   <span>{service.tagline}</span>
                 </div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-4 leading-tight" style={{ color: t.ink }}>
+                <h2
+                  className="text-3xl md:text-4xl font-bold mb-4 leading-tight"
+                  style={{ color: t.ink }}
+                >
                   {service.title}
                 </h2>
                 <p className="text-base leading-relaxed" style={{ color: t.textSecondary }}>
@@ -105,12 +104,18 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({ service, onClose }
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.15 }}
                 className="rounded-2xl p-6"
-                style={{ background: `linear-gradient(135deg, ${c}18, ${c}08)`, border: `1px solid ${c}30` }}
+                style={{
+                  background: `linear-gradient(135deg, ${c}18, ${c}08)`,
+                  border: `1px solid ${c}30`,
+                }}
               >
                 <div className="flex items-center gap-4">
                   <span className="text-4xl">{service.caseStudy.emoji}</span>
                   <div>
-                    <div className="text-xs font-semibold uppercase tracking-widest mb-1" style={{ color: c }}>
+                    <div
+                      className="text-xs font-semibold uppercase tracking-widest mb-1"
+                      style={{ color: c }}
+                    >
                       Étude de cas — {service.caseStudy.name}
                     </div>
                     <div className="text-2xl font-bold" style={{ color: t.ink }}>
@@ -121,11 +126,14 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({ service, onClose }
               </motion.div>
 
               <div>
-                <h3 className="text-sm font-bold uppercase tracking-widest mb-5" style={{ color: t.ink }}>
+                <h3
+                  className="text-sm font-bold uppercase tracking-widest mb-5"
+                  style={{ color: t.ink }}
+                >
                   Ce qui est inclus
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {service.features.map((feat) => (
+                  {service.features.map(feat => (
                     <div
                       key={feat}
                       className="flex items-start gap-3 p-4 rounded-xl"
@@ -144,11 +152,14 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({ service, onClose }
               </div>
 
               <div>
-                <h3 className="text-sm font-bold uppercase tracking-widest mb-5" style={{ color: t.ink }}>
+                <h3
+                  className="text-sm font-bold uppercase tracking-widest mb-5"
+                  style={{ color: t.ink }}
+                >
                   Livrables
                 </h3>
                 <div className="flex flex-wrap gap-3">
-                  {service.deliverables.map((d) => (
+                  {service.deliverables.map(d => (
                     <div
                       key={d}
                       className="flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium"
@@ -166,11 +177,14 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({ service, onClose }
               </div>
 
               <div>
-                <h3 className="text-sm font-bold uppercase tracking-widest mb-5" style={{ color: t.ink }}>
+                <h3
+                  className="text-sm font-bold uppercase tracking-widest mb-5"
+                  style={{ color: t.ink }}
+                >
                   Technologies utilisées
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {service.stack.map((tech) => (
+                  {service.stack.map(tech => (
                     <span
                       key={tech}
                       className="px-3 py-1.5 rounded-lg text-xs font-semibold"
@@ -187,11 +201,14 @@ export const ServiceDrawer: React.FC<ServiceDrawerProps> = ({ service, onClose }
               </div>
 
               <div>
-                <h3 className="text-sm font-bold uppercase tracking-widest mb-5" style={{ color: t.ink }}>
+                <h3
+                  className="text-sm font-bold uppercase tracking-widest mb-5"
+                  style={{ color: t.ink }}
+                >
                   Comment ça se passe
                 </h3>
                 <div className="space-y-3">
-                  {drawerProcessSteps.map((item) => (
+                  {drawerProcessSteps.map(item => (
                     <div
                       key={item.num}
                       className="flex gap-4 p-4 rounded-xl"

@@ -177,13 +177,6 @@ export const THEME_DARK = buildDarkTheme();
 
 export type ThemeTokens = typeof THEME_LIGHT | typeof THEME_DARK;
 
-/** @deprecated Utilisez `useTheme().tokens` ou `THEME_LIGHT` / `THEME_DARK`. */
-export const THEME = THEME_LIGHT;
-export const COLORS = THEME_LIGHT;
-
-export type ThemeKey = keyof ThemeTokens;
-export type ColorKey = keyof ThemeTokens;
-
 export function getGlassStyle(t: ThemeTokens): CSSProperties {
   return {
     background: t.glassBackground,
@@ -192,6 +185,3 @@ export function getGlassStyle(t: ThemeTokens): CSSProperties {
     border: `1px solid ${t.glassBorder}`,
   };
 }
-
-/** @deprecated Utilisez `getGlassStyle(tokens)`. */
-export const glassStyle: CSSProperties = getGlassStyle(THEME_LIGHT);

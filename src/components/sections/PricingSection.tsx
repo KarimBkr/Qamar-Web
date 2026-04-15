@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { CheckCircle } from 'lucide-react';
 import { getGlassStyle } from '@/constants/colors';
 import { fadeUp } from '@/constants/animations';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/use-theme';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { plans, upsells } from '@/data/pricing';
@@ -66,7 +66,7 @@ const PlanCard: React.FC<{ plan: Plan; index: number }> = ({ plan, index }) => {
         </div>
 
         <ul className="space-y-3 mb-6 flex-1">
-          {plan.features.map((feat) => (
+          {plan.features.map(feat => (
             <li key={feat} className="flex items-center gap-3 text-sm">
               <CheckCircle size={16} style={{ color: planAccent, flexShrink: 0 }} />
               <span style={{ color: t.testimonialQuote }}>{feat}</span>
@@ -147,7 +147,7 @@ export const PricingSection: React.FC = () => {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {upsells.map((item) => (
+                {upsells.map(item => (
                   <div
                     key={item.title}
                     className="p-6 rounded-2xl flex flex-col items-center text-center"

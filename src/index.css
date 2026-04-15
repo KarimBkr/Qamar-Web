@@ -30,9 +30,32 @@ html.dark textarea::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
 
+/* Ancres : titres visibles sous la navbar fixe + défilement fluide */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(5.25rem + env(safe-area-inset-top, 0px));
+}
+
+@media (min-width: 768px) {
+  html {
+    scroll-padding-top: calc(5rem + env(safe-area-inset-top, 0px));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
 /* ─── Typography ─────────────────────────────────────────────────────────── */
 body,
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'Raleway', sans-serif;
 }
 @import 'tailwindcss';

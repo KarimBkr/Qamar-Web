@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Star } from 'lucide-react';
 import { getGlassStyle } from '@/constants/colors';
 import { fadeUp } from '@/constants/animations';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/use-theme';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { testimonials } from '@/data/testimonials';
@@ -35,7 +35,12 @@ export const TestimonialsSection: React.FC = () => {
               >
                 <div className="flex mb-4">
                   {Array.from({ length: item.stars }).map((_, j) => (
-                    <Star key={`star-${item.name}-${j}`} size={16} fill={t.accent} style={{ color: t.accent }} />
+                    <Star
+                      key={`star-${item.name}-${j}`}
+                      size={16}
+                      fill={t.accent}
+                      style={{ color: t.accent }}
+                    />
                   ))}
                 </div>
 

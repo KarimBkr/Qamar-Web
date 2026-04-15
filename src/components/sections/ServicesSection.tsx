@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
-import { getGlassStyle, USE_THEME_ACCENT } from '@/constants/colors';
+import { getGlassStyle } from '@/constants/colors';
+import { serviceAccentColor } from '@/lib/serviceAccent';
 import { fadeUp } from '@/constants/animations';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/use-theme';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { services } from '@/data/services';
@@ -11,10 +12,6 @@ import type { ServiceDetail } from '@/types';
 
 interface ServicesSectionProps {
   onServiceClick: (service: ServiceDetail) => void;
-}
-
-function serviceColor(service: ServiceDetail, accent: string): string {
-  return service.color === USE_THEME_ACCENT ? accent : service.color;
 }
 
 export const ServicesSection: React.FC<ServicesSectionProps> = ({ onServiceClick }) => {
@@ -41,7 +38,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onServiceClick
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service, i) => {
-            const c = serviceColor(service, t.accent);
+            const c = serviceAccentColor(service, t.accent);
             return (
               <AnimatedSection key={service.id}>
                 <motion.div
@@ -54,7 +51,9 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onServiceClick
                 >
                   <div
                     className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
-                    style={{ background: `radial-gradient(circle at 30% 30%, ${c}15, transparent 60%)` }}
+                    style={{
+                      background: `radial-gradient(circle at 30% 30%, ${c}15, transparent 60%)`,
+                    }}
                   />
 
                   <div

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { User, Mail, FileText, ArrowRight, Twitter, Linkedin, Instagram } from 'lucide-react';
 import { getGlassStyle } from '@/constants/colors';
 import { fadeUp } from '@/constants/animations';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/use-theme';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 
 interface FormState {
@@ -16,7 +16,13 @@ const INITIAL_FORM: FormState = { name: '', email: '', project: '' };
 
 const INPUT_FIELDS = [
   { id: 'name' as const, label: 'Votre nom', placeholder: 'Jean Dupont', icon: User, type: 'text' },
-  { id: 'email' as const, label: 'Email professionnel', placeholder: 'jean@entreprise.com', icon: Mail, type: 'email' },
+  {
+    id: 'email' as const,
+    label: 'Email professionnel',
+    placeholder: 'jean@entreprise.com',
+    icon: Mail,
+    type: 'email',
+  },
 ] as const;
 
 const TiktokIcon = ({ size = 20 }: { size?: number }) => (
@@ -57,9 +63,9 @@ export const ContactSection: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(false);
 
-  const handleChange = (id: keyof FormState) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => setForm((prev) => ({ ...prev, [id]: e.target.value }));
+  const handleChange =
+    (id: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      setForm(prev => ({ ...prev, [id]: e.target.value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -139,7 +145,7 @@ export const ContactSection: React.FC = () => {
             className="p-8 rounded-3xl space-y-5"
             style={{ ...glass, boxShadow: t.shadowLg }}
           >
-            {INPUT_FIELDS.map((field) => (
+            {INPUT_FIELDS.map(field => (
               <div key={field.id}>
                 <label className="block text-sm font-medium mb-2" style={{ color: t.textLabel }}>
                   {field.label}
@@ -158,8 +164,8 @@ export const ContactSection: React.FC = () => {
                     required
                     className="w-full py-3.5 pl-11 pr-4 rounded-xl text-sm outline-none transition-all"
                     style={inputBaseStyle}
-                    onFocus={(e) => (e.currentTarget.style.borderColor = t.accent)}
-                    onBlur={(e) => (e.currentTarget.style.borderColor = t.inputBorderBlur)}
+                    onFocus={e => (e.currentTarget.style.borderColor = t.accent)}
+                    onBlur={e => (e.currentTarget.style.borderColor = t.inputBorderBlur)}
                   />
                 </div>
               </div>
@@ -183,8 +189,8 @@ export const ContactSection: React.FC = () => {
                   rows={4}
                   className="w-full py-3.5 pl-11 pr-4 rounded-xl text-sm outline-none transition-all resize-none"
                   style={inputBaseStyle}
-                  onFocus={(e) => (e.currentTarget.style.borderColor = t.accent)}
-                  onBlur={(e) => (e.currentTarget.style.borderColor = t.inputBorderBlur)}
+                  onFocus={e => (e.currentTarget.style.borderColor = t.accent)}
+                  onBlur={e => (e.currentTarget.style.borderColor = t.inputBorderBlur)}
                 />
               </div>
             </div>
@@ -225,11 +231,14 @@ export const ContactSection: React.FC = () => {
             custom={0.2}
             className="mt-16 flex flex-col items-center gap-6"
           >
-            <p className="text-sm font-medium tracking-wide uppercase" style={{ color: t.textTertiary }}>
+            <p
+              className="text-sm font-medium tracking-wide uppercase"
+              style={{ color: t.textTertiary }}
+            >
               Ou contactez-nous via
             </p>
             <div className="flex items-center gap-4">
-              {SOCIAL_LINKS.map((social) => (
+              {SOCIAL_LINKS.map(social => (
                 <a
                   key={social.name}
                   href={social.href}
@@ -242,11 +251,11 @@ export const ContactSection: React.FC = () => {
                     color: t.ink,
                   }}
                   aria-label={`Visiter notre ${social.name}`}
-                  onMouseEnter={(e) => {
+                  onMouseEnter={e => {
                     e.currentTarget.style.borderColor = t.accent;
                     e.currentTarget.style.color = t.accent;
                   }}
-                  onMouseLeave={(e) => {
+                  onMouseLeave={e => {
                     e.currentTarget.style.borderColor = t.borderMedium;
                     e.currentTarget.style.color = t.ink;
                   }}

@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useScroll } from '@/hooks/use-scroll';
 import { useActiveSection } from '@/hooks/use-active-section';
 import { Navbar } from '@/components/layout/Navbar';
+import { MobileContactFab } from '@/components/layout/MobileContactFab';
 import { Footer } from '@/components/layout/Footer';
 import { ServiceDrawer } from '@/components/ServiceDrawer';
 import { HeroSection } from '@/components/sections/HeroSection';
@@ -14,7 +15,7 @@ import { AboutSection } from '@/components/sections/AboutSection';
 import { TestimonialsSection } from '@/components/sections/TestimonialsSection';
 import { CalendlySection } from '@/components/sections/CalendlySection';
 import { ContactSection } from '@/components/sections/ContactSection';
-import { useTheme } from '@/context/ThemeContext';
+import { useTheme } from '@/hooks/use-theme';
 import type { ServiceDetail } from '@/types';
 
 /**
@@ -26,6 +27,7 @@ export const QamarWebLanding: React.FC = () => {
   const scrolled = useScroll(30);
   const activeSection = useActiveSection();
   const [selectedService, setSelectedService] = useState<ServiceDetail | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleServiceClick = useCallback((service: ServiceDetail) => {
     setSelectedService(service);
@@ -36,12 +38,15 @@ export const QamarWebLanding: React.FC = () => {
   }, []);
 
   return (
-    <div
-      className="min-h-screen w-full"
-      style={{ background: t.canvas, overflowX: 'hidden' }}
-    >
+    <div className="min-h-screen w-full" style={{ background: t.canvas, overflowX: 'hidden' }}>
       <ServiceDrawer service={selectedService} onClose={handleDrawerClose} />
-      <Navbar scrolled={scrolled} activeSection={activeSection} />
+      <Navbar
+        scrolled={scrolled}
+        activeSection={activeSection}
+        mobileMenuOpen={mobileMenuOpen}
+        onMobileMenuOpenChange={setMobileMenuOpen}
+      />
+      <MobileContactFab hidden={mobileMenuOpen || selectedService !== null} />
 
       <main>
         <HeroSection />

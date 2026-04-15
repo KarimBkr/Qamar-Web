@@ -18,7 +18,7 @@ export const services: ServiceDetail[] = [
       'SEO technique et on-page intégré',
       'Responsive et accessible (WCAG)',
       'Animations et micro-interactions',
-      "CMS intégré pour autonomie totale",
+      'CMS intégré pour autonomie totale',
     ],
     deliverables: [
       'Maquettes UX/UI validées',
@@ -37,13 +37,13 @@ export const services: ServiceDetail[] = [
     id: 'sites-business',
     icon: Layers,
     title: 'Sites business avancés',
-    desc: "UX/UI sur mesure et stratégie digitale pour maximiser votre impact en ligne.",
+    desc: 'UX/UI sur mesure et stratégie digitale pour maximiser votre impact en ligne.',
     color: '#a78bfa',
     tagline: 'Stratégie + Design + Performance.',
     longDesc:
       "Pour les entreprises qui veulent dominer leur marché, nous créons des expériences digitales complexes : tunnels de vente optimisés, landing pages haute conversion, portails clients ou espaces membres. Chaque élément est pensé pour guider l'utilisateur vers l'action.",
     features: [
-      "Audit UX de votre existant",
+      'Audit UX de votre existant',
       "Architecture d'information avancée",
       'Tunnel de vente optimisé',
       'A/B testing et analytics',
