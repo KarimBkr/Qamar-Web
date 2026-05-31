@@ -33,7 +33,17 @@ const ProjectCarouselCard: React.FC<ProjectCarouselCardProps> = ({
 }) => {
   const cardContent = (
     <>
-      {project.image ? (
+      {project.video ? (
+        <video
+          src={project.video}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-contain"
+          style={{ opacity: 0.85 }}
+        />
+      ) : project.image ? (
         <img
           src={project.image}
           alt={`Aperçu du site ${project.name}`}
@@ -45,7 +55,7 @@ const ProjectCarouselCard: React.FC<ProjectCarouselCardProps> = ({
       <div
         className="absolute inset-0"
         style={{
-          background: project.image
+          background: (project.image || project.video)
             ? 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.65) 100%)'
             : project.gradient,
         }}
@@ -161,7 +171,17 @@ const ProjectWalletCard: React.FC<ProjectWalletCardProps> = ({
 
   const expandedBody = (
     <>
-      {project.image ? (
+      {project.video ? (
+        <video
+          src={project.video}
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-contain"
+          style={{ opacity: 0.9 }}
+        />
+      ) : project.image ? (
         <img
           src={project.image}
           alt=""
@@ -172,7 +192,7 @@ const ProjectWalletCard: React.FC<ProjectWalletCardProps> = ({
       <div
         className="absolute inset-0"
         style={{
-          background: project.image
+          background: (project.image || project.video)
             ? 'linear-gradient(165deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.75) 100%)'
             : project.gradient,
           boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1)',

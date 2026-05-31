@@ -31,6 +31,8 @@ export interface Project {
   emoji: string;
   /** URL d'une image de preview (screenshot du site) */
   image?: string;
+  /** URL d'une vidéo de preview */
+  video?: string;
   /** Lien vers le site en production */
   url?: string;
 }
