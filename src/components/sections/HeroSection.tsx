@@ -139,14 +139,17 @@ export const HeroSection: React.FC = () => {
                 />
               </div>
 
-              <div
-                className="mt-5 h-12 rounded-xl flex items-center justify-center cursor-pointer transition-transform hover:scale-[1.02]"
+              <a
+                href="https://www.waterplomberie.pro/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 h-12 rounded-xl flex items-center justify-center transition-transform hover:scale-[1.02] no-underline"
                 style={{ background: t.accent, boxShadow: `0 8px 16px ${t.accentShadow}` }}
               >
                 <span className="text-sm font-bold" style={{ color: t.onAccent }}>
                   Voir l'étude de cas →
                 </span>
-              </div>
+              </a>
             </motion.div>
 
             <motion.div
