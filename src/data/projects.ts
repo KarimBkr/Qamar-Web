@@ -1,6 +1,7 @@
 import maisonMayssaImg from '@/assets/maison-mayssa.png';
 import waterplomberieImg from '@/assets/waterplomberie.png';
 import dysponibleVideo from '@/assets/dys-ponible-video.mov';
+import lalbicuttzVideo from '@/assets/lalbicuttz-video.mov';
 import type { Project } from '@/types';
 
 /** Réalisations affichées sur la landing — compléter au fil de l'eau. */
@@ -28,6 +29,14 @@ export const projects: Project[] = [
     emoji: '📚',
     video: dysponibleVideo,
     url: 'https://www.dys-ponible.fr/',
+  },
+  {
+    name: 'Lalbicuttz',
+    type: 'Réservation Barber',
+    gradient: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
+    emoji: '✂️',
+    video: lalbicuttzVideo,
+    url: 'https://www.lalbicuttz.fr/',
   },
 ];
 
