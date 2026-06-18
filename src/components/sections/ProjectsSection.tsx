@@ -40,6 +40,7 @@ const ProjectCarouselCard: React.FC<ProjectCarouselCardProps> = ({
           loop
           muted
           playsInline
+          preload="auto"
           className="absolute inset-0 w-full h-full object-contain"
           style={{ opacity: 0.85 }}
         />
@@ -178,6 +179,7 @@ const ProjectWalletCard: React.FC<ProjectWalletCardProps> = ({
           loop
           muted
           playsInline
+          preload="auto"
           className="absolute inset-0 w-full h-full object-contain"
           style={{ opacity: 0.9 }}
         />

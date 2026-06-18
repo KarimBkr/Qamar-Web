@@ -1,5 +1,5 @@
-import maisonMayssaImg from '@/assets/maison-mayssa.png';
 import waterplomberieImg from '@/assets/waterplomberie.png';
+import maisonMayssaVideo from '@/assets/maison-mayssa-video.mp4';
 import dysponibleVideo from '@/assets/dys-ponible-video.mov';
 import lalbicuttzVideo from '@/assets/lalbicuttz-video.mov';
 import type { Project } from '@/types';
@@ -19,7 +19,7 @@ export const projects: Project[] = [
     type: 'Site e-commerce',
     gradient: 'linear-gradient(135deg, #3d2b1f 0%, #2d1e14 100%)',
     emoji: '🍰',
-    image: maisonMayssaImg,
+    video: maisonMayssaVideo,
     url: 'https://www.maison-mayssa.fr/',
   },
   {
