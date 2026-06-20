@@ -34,7 +34,6 @@ export const ProcessSection: React.FC = () => {
                   height: '100%',
                 }}
               >
-                {/* Number */}
                 <div
                   style={{
                     fontFamily: 'var(--font-title)',
@@ -50,7 +49,6 @@ export const ProcessSection: React.FC = () => {
                   {step.num}
                 </div>
 
-                {/* Title */}
                 <h3
                   style={{
                     fontFamily: 'var(--font-title)',
@@ -65,7 +63,6 @@ export const ProcessSection: React.FC = () => {
                   {step.title}
                 </h3>
 
-                {/* Description — Cormorant */}
                 <p
                   style={{
                     fontFamily: 'var(--font-text)',

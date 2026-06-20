@@ -30,7 +30,7 @@ const STATS: [string, string][] = [
   ['100%', 'Satisfaction client'],
 ];
 
-const TechItem: React.FC<{ name: string; Icon: React.ElementType; color: string }> = ({ name, Icon, color }) => {
+const TechItem: React.FC<{ name: string; Icon: React.ComponentType<{ size?: number; style?: React.CSSProperties }>; color: string }> = ({ name, Icon, color }) => {
   const [hovered, setHovered] = useState(false);
   return (
     <div

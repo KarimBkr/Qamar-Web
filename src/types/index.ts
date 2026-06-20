@@ -24,17 +24,39 @@ export interface ServiceDetail {
 
 // ─── Project ─────────────────────────────────────────────────────────────────
 
+export interface ProjectCaseStudy {
+  context: string;
+  objectives: string[];
+  highlights: string[];
+  stack: string[];
+  valueProposition: string;
+}
+
+export interface ProjectMetric {
+  value: string;
+  label: string;
+}
+
 export interface Project {
   name: string;
   type: string;
   gradient: string;
   emoji: string;
-  /** URL d'une image de preview (screenshot du site) */
   image?: string;
-  /** URL d'une vidéo de preview */
   video?: string;
-  /** Lien vers le site en production */
+  /** Images supplémentaires pour le carrousel modal */
+  gallery?: string[];
   url?: string;
+  slug: string;
+  title: string;
+  tagline: string;
+  summary: string;
+  tags: string[];
+  location?: string;
+  featured?: boolean;
+  /** Chiffres clés affichés en haut de l'étude de cas */
+  metrics: ProjectMetric[];
+  caseStudy: ProjectCaseStudy;
 }
 
 // ─── Pricing ─────────────────────────────────────────────────────────────────
@@ -75,6 +97,8 @@ export interface Testimonial {
   text: string;
   stars: number;
   avatar: string;
+  /** Lien vers le slug projet (étude de cas) */
+  projectSlug?: string;
 }
 
 // ─── Trust ───────────────────────────────────────────────────────────────────

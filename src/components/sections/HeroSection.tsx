@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import waterplomberieImg from '@/assets/waterplomberie.png';
 import maisonMayssaVideo from '@/assets/maison-mayssa-video.mp4';
-import dysponibleVideo from '@/assets/dys-ponible-video.mov';
-import lalbicuttzVideo from '@/assets/lalbicuttz-video.mov';
+import dysponibleVideo from '@/assets/dys-ponible-video.mp4';
+import lalbicuttzVideo from '@/assets/lalbicuttz-video.mp4';
+import { SplitText } from '@/components/ui/SplitText';
+import { MagneticButton } from '@/components/ui/MagneticButton';
+import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
 interface Slide {
   type: 'image' | 'video';
@@ -13,15 +16,35 @@ interface Slide {
 }
 
 const SLIDES: Slide[] = [
-  { type: 'image', src: waterplomberieImg,  label: 'WaterPlomberie', sub: 'Site Business'          },
-  { type: 'video', src: maisonMayssaVideo,  label: 'Maison Mayssa',  sub: 'E-commerce'             },
-  { type: 'video', src: dysponibleVideo,    label: 'Dys-ponible',    sub: 'Site Vitrine'           },
-  { type: 'video', src: lalbicuttzVideo,    label: 'Lalbicuttz',     sub: 'Réservation Barber'     },
+  { type: 'image', src: waterplomberieImg,  label: 'Water Plomberie', sub: 'Site vitrine & leads'   },
+  { type: 'video', src: maisonMayssaVideo,  label: 'Maison Mayssa',  sub: 'E-commerce · Précommande'    },
+  { type: 'video', src: dysponibleVideo,    label: 'Dys-ponible',    sub: 'Soutien scolaire spécialisé' },
+  { type: 'video', src: lalbicuttzVideo,    label: 'LALBICUT',       sub: 'Barbier · Bonneville'   },
 ];
 
-export const HeroSection: React.FC = () => {
+interface HeroSectionProps {
+  introComplete?: boolean;
+}
+
+export const HeroSection: React.FC<HeroSectionProps> = ({ introComplete = true }) => {
   const [idx, setIdx] = useState(0);
-  const tiltRef = useRef<HTMLDivElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const reduced = useReducedMotion();
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start'],
+  });
+
+  const bgScale = useTransform(scrollYProgress, [0, 1], reduced ? [1, 1] : [1, 1.18]);
+  const bgFilter = useTransform(
+    scrollYProgress,
+    [0, 0.85],
+    ['grayscale(60%) brightness(0.55)', 'grayscale(60%) brightness(0.30)']
+  );
+  const contentY = useTransform(scrollYProgress, [0, 1], reduced ? [0, 0] : [0, -100]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
+  const overlayOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 1.4]);
 
   const next = useCallback(() => setIdx(i => (i + 1) % SLIDES.length), []);
 
@@ -30,48 +53,23 @@ export const HeroSection: React.FC = () => {
     return () => clearInterval(id);
   }, [next]);
 
-  /* 3D tilt on mouse move — Ownitt-style */
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    const el = tiltRef.current;
-    if (!el) return;
-    const { left, top, width, height } = el.getBoundingClientRect();
-    const x = ((e.clientX - left) / width  - 0.5) * 8;
-    const y = ((e.clientY - top)  / height - 0.5) * 8;
-    el.style.transform = `translate(-50%,-50%) rotateX(${-y}deg) rotateY(${x}deg)`;
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    const el = tiltRef.current;
-    if (!el) return;
-    el.style.transform = 'translate(-50%,-50%) rotateX(0deg) rotateY(0deg)';
-  }, []);
-
   const slide = SLIDES[idx];
   const padded = String(idx + 1).padStart(2, '0');
   const total  = String(SLIDES.length).padStart(2, '0');
 
   return (
     <section
+      ref={sectionRef}
       id="accueil"
       className="relative w-full overflow-hidden"
       style={{ height: '100svh', minHeight: 600 }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
     >
-      {/* ── Background slides (crossfade) ── */}
-      <div
-        ref={tiltRef}
+      {/* Background slides — parallax scale au scroll */}
+      <motion.div
         style={{
           position: 'absolute',
           inset: '-4%',
-          transformStyle: 'preserve-3d',
-          willChange: 'transform',
-          transition: 'transform 0.12s ease-out',
-          transform: 'translate(-50%,-50%)',
-          top: '50%',
-          left: '50%',
-          width: '108%',
-          height: '108%',
+          scale: reduced ? 1 : bgScale,
         }}
       >
         <AnimatePresence mode="sync">
@@ -82,16 +80,13 @@ export const HeroSection: React.FC = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.4, ease: 'easeInOut' }}
+            style={{ filter: reduced ? 'grayscale(60%) brightness(0.55)' : bgFilter }}
           >
             {slide.type === 'video' ? (
               <video
                 src={slide.src}
                 autoPlay loop muted playsInline preload="auto"
-                style={{
-                  width: '100%', height: '100%',
-                  objectFit: 'cover',
-                  filter: 'grayscale(60%) brightness(0.55)',
-                }}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               />
             ) : (
               <img
@@ -101,16 +96,15 @@ export const HeroSection: React.FC = () => {
                   width: '100%', height: '100%',
                   objectFit: 'cover',
                   objectPosition: 'center top',
-                  filter: 'grayscale(60%) brightness(0.50)',
                 }}
               />
             )}
           </motion.div>
         </AnimatePresence>
-      </div>
+      </motion.div>
 
-      {/* ── Overlay — vignette forte + gradient central pour lisibilité ── */}
-      <div
+      {/* Overlay — s'intensifie au scroll */}
+      <motion.div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: [
@@ -118,9 +112,10 @@ export const HeroSection: React.FC = () => {
             'linear-gradient(to bottom, rgba(10,10,11,0.50) 0%, rgba(10,10,11,0.10) 35%, rgba(10,10,11,0.15) 65%, rgba(10,10,11,0.65) 100%)',
           ].join(', '),
           zIndex: 1,
+          opacity: overlayOpacity,
         }}
       />
-      {/* Halo derrière le texte pour isolation totale */}
+
       <div
         className="absolute pointer-events-none"
         style={{
@@ -132,10 +127,14 @@ export const HeroSection: React.FC = () => {
         }}
       />
 
-      {/* ── Content ── */}
-      <div className="absolute inset-0 flex flex-col justify-between px-6 md:px-12 py-8 md:py-10" style={{ zIndex: 3 }}>
-
-        {/* Top bar */}
+      {/* Content — monte et disparaît au scroll */}
+      <motion.div
+        className="absolute inset-0 flex flex-col justify-between px-6 md:px-12 py-8 md:py-10"
+        style={{ zIndex: 3, y: contentY, opacity: contentOpacity }}
+        initial={introComplete ? { opacity: 0, y: 24 } : false}
+        animate={introComplete ? { opacity: 1, y: 0 } : undefined}
+        transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+      >
         <div className="flex items-center justify-between">
           <span style={{
             fontFamily: 'var(--font-title)',
@@ -146,7 +145,6 @@ export const HeroSection: React.FC = () => {
           }}>
             Agence Web · Annecy
           </span>
-          {/* Dots navigation */}
           <div className="flex items-center gap-2">
             {SLIDES.map((_, i) => (
               <button
@@ -154,6 +152,7 @@ export const HeroSection: React.FC = () => {
                 type="button"
                 onClick={() => setIdx(i)}
                 aria-label={`Slide ${i + 1}`}
+                data-cursor="nav"
                 style={{
                   width: i === idx ? 28 : 6,
                   height: 2,
@@ -167,7 +166,6 @@ export const HeroSection: React.FC = () => {
           </div>
         </div>
 
-        {/* Centre — tagline */}
         <div className="flex flex-col items-center text-center">
           <AnimatePresence mode="wait">
             <motion.div
@@ -201,8 +199,11 @@ export const HeroSection: React.FC = () => {
             </motion.div>
           </AnimatePresence>
 
-          {/* Main tagline — Cormorant italic, large, ombre pour lisibilité */}
-          <h1
+          <SplitText
+            as="h1"
+            text="Tout commence par une conversation."
+            animateOnMount={introComplete}
+            delay={0.2}
             style={{
               fontFamily: 'var(--font-text)',
               fontSize: 'clamp(2rem, 5.5vw, 5rem)',
@@ -212,15 +213,17 @@ export const HeroSection: React.FC = () => {
               lineHeight: 1.15,
               letterSpacing: '-0.01em',
               maxWidth: '16ch',
-              margin: 0,
+              margin: '0 auto',
+              textAlign: 'center',
               textShadow: '0 2px 40px rgba(10,10,11,0.8), 0 0 80px rgba(10,10,11,0.6)',
             }}
-          >
-            Tout commence par une conversation.
-          </h1>
+          />
 
-          <a
+          <MagneticButton
+            as="a"
             href="#contact"
+            data-cursor="cta"
+            strength={0.25}
             style={{
               marginTop: '2.5rem',
               fontFamily: 'var(--font-title)',
@@ -229,20 +232,17 @@ export const HeroSection: React.FC = () => {
               textTransform: 'uppercase',
               color: '#f4f1ea',
               textDecoration: 'none',
-              display: 'inline-flex',
               alignItems: 'center',
               gap: '0.75rem',
               paddingBottom: '2px',
               borderBottom: '1px solid rgba(244,241,234,0.35)',
-              transition: 'border-color 0.2s',
             }}
           >
             Démarrer un projet
             <span style={{ color: '#C9882A', fontSize: '1rem', lineHeight: 1 }}>→</span>
-          </a>
+          </MagneticButton>
         </div>
 
-        {/* Bottom bar */}
         <div className="flex items-end justify-between">
           <span style={{
             fontFamily: 'var(--font-title)',
@@ -255,8 +255,7 @@ export const HeroSection: React.FC = () => {
             {total}
           </span>
 
-          {/* Scroll indicator */}
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }} data-cursor="scroll">
             <div style={{ width: 1, height: 48, background: 'rgba(244,241,234,0.18)', position: 'relative', overflow: 'hidden' }}>
               <motion.div
                 style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '40%', background: '#C9882A' }}
@@ -276,7 +275,7 @@ export const HeroSection: React.FC = () => {
             </span>
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

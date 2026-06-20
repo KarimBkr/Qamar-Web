@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { fadeUp } from '@/constants/animations';
 import { useTheme } from '@/hooks/use-theme';
+import { SplitText } from '@/components/ui/SplitText';
 
 interface SectionTitleProps {
   label: string;
@@ -30,9 +31,10 @@ export const SectionTitle: React.FC<SectionTitleProps> = ({ label, title, subtit
         </span>
       </motion.div>
 
-      <motion.h2
-        variants={fadeUp}
-        custom={0.1}
+      <SplitText
+        as="h2"
+        text={title}
+        delay={0.08}
         style={{
           fontFamily: 'var(--font-title)',
           fontSize: 'clamp(2.5rem, 6vw, 5rem)',
@@ -44,9 +46,7 @@ export const SectionTitle: React.FC<SectionTitleProps> = ({ label, title, subtit
           margin: 0,
           marginBottom: subtitle ? '1.25rem' : 0,
         }}
-      >
-        {title}
-      </motion.h2>
+      />
 
       {subtitle && (
         <motion.p

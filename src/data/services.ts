@@ -29,7 +29,7 @@ export const services: ServiceDetail[] = [
     stack: ['Next.js', 'React', 'Tailwind CSS', 'Contentful', 'Vercel'],
     caseStudy: {
       name: 'Maison Mayssa',
-      result: "E-commerce pâtisserie, trompes l'œil & livraison — Annecy",
+      result: 'E-commerce artisanal, PWA & back-office admin — Annecy',
       emoji: '🍰',
     },
   },
@@ -59,7 +59,7 @@ export const services: ServiceDetail[] = [
     stack: ['Next.js', 'TypeScript', 'HubSpot', 'Google Analytics 4', 'Hotjar'],
     caseStudy: {
       name: 'Water Plomberie',
-      result: 'Vitrine artisan plombier, urgence 24/7 & devis — Annecy',
+      result: 'Site vitrine & leads, SEO local & urgence 24/7 — Annecy',
       emoji: '🔧',
     },
   },
@@ -84,7 +84,7 @@ export const services: ServiceDetail[] = [
     stack: ['React', 'Node.js', 'PostgreSQL', 'Stripe', 'Docker', 'AWS'],
     caseStudy: {
       name: 'Maison Mayssa',
-      result: "Parcours d'achat, catalogue & commande structurés — maison-mayssa.fr",
+      result: 'Plateforme e-commerce full-stack, Firebase & dashboard admin',
       emoji: '🍰',
     },
   },
@@ -113,9 +113,9 @@ export const services: ServiceDetail[] = [
     ],
     stack: ['React Native', 'Expo', 'TypeScript', 'Firebase', 'RevenueCat'],
     caseStudy: {
-      name: 'Water Plomberie',
-      result: 'Expérience mobile-first, urgence & RDV au premier plan — waterplomberie.pro',
-      emoji: '🔧',
+      name: 'LALBICUT',
+      result: 'Site vitrine barber, branding premium & prise de RDV — Bonneville',
+      emoji: '✂️',
     },
   },
   {
@@ -143,9 +143,9 @@ export const services: ServiceDetail[] = [
     ],
     stack: ['Make', 'Zapier', 'Python', 'n8n', 'Airtable', 'Notion API'],
     caseStudy: {
-      name: 'Maison Mayssa',
-      result: 'Panier, envoi WhatsApp & précommandes — parcours allégé côté client',
-      emoji: '🍰',
+      name: 'Dys-ponible',
+      result: 'Site niche rassurant, accessibilité & conversion — dys-ponible.fr',
+      emoji: '📚',
     },
   },
 ];

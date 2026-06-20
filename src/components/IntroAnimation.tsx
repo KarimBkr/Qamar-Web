@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import waterplomberieImg from '@/assets/waterplomberie.png';
 import maisonMayssaImg from '@/assets/maison-mayssa.png';
 import maisonMayssaVideo from '@/assets/maison-mayssa-video.mp4';
-import dysponibleVideo from '@/assets/dys-ponible-video.mov';
-import lalbicuttzVideo from '@/assets/lalbicuttz-video.mov';
+import dysponibleVideo from '@/assets/dys-ponible-video.mp4';
+import lalbicuttzVideo from '@/assets/lalbicuttz-video.mp4';
 
 const CELLS: Array<{ type: 'img'; src: string } | { type: 'video'; src: string }> = [
   { type: 'img',   src: waterplomberieImg },
@@ -97,7 +97,7 @@ export const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) =>
                 >
                   <div
                     className="intro-cell-inner"
-                    style={{ position: 'absolute', inset: 0, transformStyle: 'preserve-3d' }}
+                    style={{ position: 'absolute', inset: 0 }}
                   >
                     {cell.type === 'video' ? (
                       <video
