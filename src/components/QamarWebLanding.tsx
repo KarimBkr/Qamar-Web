@@ -5,6 +5,8 @@ import { Navbar } from '@/components/layout/Navbar';
 import { MobileContactFab } from '@/components/layout/MobileContactFab';
 import { Footer } from '@/components/layout/Footer';
 import { ServiceDrawer } from '@/components/ServiceDrawer';
+import { IntroAnimation } from '@/components/IntroAnimation';
+import { CustomCursor } from '@/components/CustomCursor';
 import { HeroSection } from '@/components/sections/HeroSection';
 import { TrustSection } from '@/components/sections/TrustSection';
 import { ServicesSection } from '@/components/sections/ServicesSection';
@@ -18,50 +20,55 @@ import { ContactSection } from '@/components/sections/ContactSection';
 import { useTheme } from '@/hooks/use-theme';
 import type { ServiceDetail } from '@/types';
 
-/**
- * Orchestrateur principal du site Qamar Web.
- * Responsabilité unique : composer les sections et passer l'état partagé.
- */
 export const QamarWebLanding: React.FC = () => {
   const { tokens: t } = useTheme();
   const scrolled = useScroll(30);
-  const activeSection = useActiveSection();
   const [selectedService, setSelectedService] = useState<ServiceDetail | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [introComplete, setIntroComplete] = useState(false);
+  const activeSection = useActiveSection(introComplete);
 
-  const handleServiceClick = useCallback((service: ServiceDetail) => {
-    setSelectedService(service);
-  }, []);
-
-  const handleDrawerClose = useCallback(() => {
-    setSelectedService(null);
-  }, []);
+  const handleServiceClick = useCallback((service: ServiceDetail) => setSelectedService(service), []);
+  const handleDrawerClose  = useCallback(() => setSelectedService(null), []);
 
   return (
     <div className="min-h-screen w-full" style={{ background: t.canvas, overflowX: 'hidden' }}>
-      <ServiceDrawer service={selectedService} onClose={handleDrawerClose} />
-      <Navbar
-        scrolled={scrolled}
-        activeSection={activeSection}
-        mobileMenuOpen={mobileMenuOpen}
-        onMobileMenuOpenChange={setMobileMenuOpen}
-      />
-      <MobileContactFab hidden={mobileMenuOpen || selectedService !== null} />
+      {/* Film grain global */}
+      <div className="grain-overlay" aria-hidden />
 
-      <main>
-        <HeroSection />
-        <TrustSection />
-        <ServicesSection onServiceClick={handleServiceClick} />
-        <ProjectsSection />
-        <PricingSection />
-        <ProcessSection />
-        <AboutSection />
-        <TestimonialsSection />
-        <CalendlySection />
-        <ContactSection />
-      </main>
+      {/* Custom cursor */}
+      <CustomCursor />
 
-      <Footer />
+      {/* Intro (always mounted until complete) */}
+      <IntroAnimation onComplete={() => setIntroComplete(true)} />
+
+      {introComplete && (
+        <>
+          <ServiceDrawer service={selectedService} onClose={handleDrawerClose} />
+          <Navbar
+            scrolled={scrolled}
+            activeSection={activeSection}
+            mobileMenuOpen={mobileMenuOpen}
+            onMobileMenuOpenChange={setMobileMenuOpen}
+          />
+          <MobileContactFab hidden={mobileMenuOpen || selectedService !== null} />
+
+          <main>
+            <HeroSection />
+            <TrustSection />
+            <ServicesSection onServiceClick={handleServiceClick} />
+            <ProjectsSection />
+            <PricingSection />
+            <ProcessSection />
+            <AboutSection />
+            <TestimonialsSection />
+            <CalendlySection />
+            <ContactSection />
+          </main>
+
+          <Footer />
+        </>
+      )}
     </div>
   );
 };

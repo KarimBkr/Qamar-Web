@@ -1,10 +1,14 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Twitter, Linkedin, Github, Instagram } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
 import { NAV_LINKS, NAV_SECTION_MAP } from '@/constants/navigation';
 
-const SOCIAL_ICONS = [Twitter, Linkedin, Github, Instagram];
+const SOCIAL_ICONS = [
+  { Icon: Twitter,   label: 'Twitter' },
+  { Icon: Linkedin,  label: 'LinkedIn' },
+  { Icon: Github,    label: 'GitHub' },
+  { Icon: Instagram, label: 'Instagram' },
+];
 
 const LEGAL_LINKS = ['Mentions légales', 'Politique de confidentialité', 'CGV'];
 
@@ -13,55 +17,114 @@ export const Footer: React.FC = () => {
 
   return (
     <footer
-      className="py-16 relative"
-      style={{ background: t.surface, borderTop: `1px solid ${t.borderSubtle}` }}
+      style={{
+        background: t.canvas,
+        borderTop: `1px solid ${t.borderSubtle}`,
+      }}
     >
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
-          <div className="md:col-span-2">
-            <div className="text-2xl font-bold mb-4" style={{ color: t.ink }}>
-              Qamar<span style={{ color: t.accent }}>.</span>Web
+      <div className="max-w-7xl mx-auto px-6 md:px-10">
+
+        {/* Main grid */}
+        <div
+          className="grid grid-cols-1 md:grid-cols-4"
+          style={{ borderBottom: `1px solid ${t.borderSubtle}` }}
+        >
+          {/* Brand column */}
+          <div
+            className="md:col-span-2 py-12 pr-12"
+            style={{ borderRight: `1px solid ${t.borderSubtle}` }}
+          >
+            <div
+              style={{
+                fontFamily: 'var(--font-title)',
+                fontSize: '1rem',
+                fontWeight: 800,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: '#f4f1ea',
+                marginBottom: '1.25rem',
+              }}
+            >
+              QAMAR<span style={{ color: t.accent }}>.</span>WEB
             </div>
-            <p className="text-sm leading-relaxed max-w-xs" style={{ color: t.muted }}>
-              Agence de développement fullstack spécialisée dans la création de solutions digitales
-              performantes qui génèrent de la croissance.
+
+            <p
+              style={{
+                fontFamily: 'var(--font-text)',
+                fontSize: '1rem',
+                fontStyle: 'italic',
+                color: 'rgba(244,241,234,0.42)',
+                lineHeight: 1.6,
+                maxWidth: '32ch',
+                marginBottom: '2rem',
+              }}
+            >
+              Agence web spécialisée dans la création de solutions digitales performantes
+              qui génèrent de la croissance.
             </p>
-            <div className="flex gap-4 mt-5">
-              {SOCIAL_ICONS.map((Icon, i) => (
-                <motion.a
-                  key={i}
+
+            <div style={{ display: 'flex', gap: '0.75rem' }}>
+              {SOCIAL_ICONS.map(({ Icon, label }) => (
+                <a
+                  key={label}
                   href="#"
-                  whileHover={{ scale: 1.15 }}
-                  className="w-9 h-9 rounded-full flex items-center justify-center transition-all"
+                  aria-label={label}
                   style={{
-                    background: t.fillSubtle,
-                    color: t.muted,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 36,
+                    height: 36,
                     border: `1px solid ${t.borderSubtle}`,
+                    color: 'rgba(244,241,234,0.35)',
+                    textDecoration: 'none',
+                    transition: 'color 0.2s, border-color 0.2s',
                   }}
-                  aria-label={`Lien réseau social ${i + 1}`}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.color = t.accent;
+                    e.currentTarget.style.borderColor = t.accent;
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.color = 'rgba(244,241,234,0.35)';
+                    e.currentTarget.style.borderColor = t.borderSubtle;
+                  }}
                 >
-                  <Icon size={16} />
-                </motion.a>
+                  <Icon size={14} />
+                </a>
               ))}
             </div>
           </div>
 
-          <div>
-            <div
-              className="text-sm font-bold mb-4 uppercase tracking-wider"
-              style={{ color: t.ink }}
-            >
-              Liens rapides
+          {/* Nav column */}
+          <div className="py-12 px-8" style={{ borderRight: `1px solid ${t.borderSubtle}` }}>
+            <div style={{
+              fontFamily: 'var(--font-title)',
+              fontSize: '0.6rem',
+              fontWeight: 600,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              color: 'rgba(244,241,234,0.35)',
+              marginBottom: '1.25rem',
+            }}>
+              Navigation
             </div>
-            <ul className="space-y-2.5">
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
               {NAV_LINKS.map(link => (
                 <li key={link}>
                   <a
                     href={`#${NAV_SECTION_MAP[link]}`}
-                    className="text-sm transition-colors"
-                    style={{ color: t.muted }}
-                    onMouseEnter={e => ((e.target as HTMLElement).style.color = t.accent)}
-                    onMouseLeave={e => ((e.target as HTMLElement).style.color = t.muted)}
+                    style={{
+                      fontFamily: 'var(--font-title)',
+                      fontSize: '0.78rem',
+                      fontWeight: 600,
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase',
+                      color: 'rgba(244,241,234,0.45)',
+                      textDecoration: 'none',
+                      transition: 'color 0.2s',
+                    }}
+                    onMouseEnter={e => ((e.target as HTMLElement).style.color = '#f4f1ea')}
+                    onMouseLeave={e => ((e.target as HTMLElement).style.color = 'rgba(244,241,234,0.45)')}
                   >
                     {link}
                   </a>
@@ -70,54 +133,106 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          <div>
-            <div
-              className="text-sm font-bold mb-4 uppercase tracking-wider"
-              style={{ color: t.ink }}
-            >
+          {/* Contact column */}
+          <div className="py-12 pl-8">
+            <div style={{
+              fontFamily: 'var(--font-title)',
+              fontSize: '0.6rem',
+              fontWeight: 600,
+              letterSpacing: '0.22em',
+              textTransform: 'uppercase',
+              color: 'rgba(244,241,234,0.35)',
+              marginBottom: '1.25rem',
+            }}>
               Contact
             </div>
-            <ul className="space-y-2.5 text-sm" style={{ color: t.muted }}>
+            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.65rem', marginBottom: '1.75rem' }}>
               <li>
                 <a
                   href="mailto:contact@qamarweb.fr"
-                  className="transition-colors hover:underline"
-                  style={{ color: 'inherit' }}
+                  style={{
+                    fontFamily: 'var(--font-title)',
+                    fontSize: '0.78rem',
+                    letterSpacing: '0.04em',
+                    color: 'rgba(244,241,234,0.45)',
+                    textDecoration: 'none',
+                    transition: 'color 0.2s',
+                  }}
                   onMouseEnter={e => ((e.target as HTMLElement).style.color = t.accent)}
-                  onMouseLeave={e => ((e.target as HTMLElement).style.color = t.muted)}
+                  onMouseLeave={e => ((e.target as HTMLElement).style.color = 'rgba(244,241,234,0.45)')}
                 >
                   contact@qamarweb.fr
                 </a>
               </li>
-              <li>+33 (0)6 XX XX XX XX</li>
-              <li>Paris, France 🇫🇷</li>
+              <li style={{
+                fontFamily: 'var(--font-title)',
+                fontSize: '0.78rem',
+                letterSpacing: '0.04em',
+                color: 'rgba(244,241,234,0.28)',
+              }}>
+                +33 (0)6 XX XX XX XX
+              </li>
+              <li style={{
+                fontFamily: 'var(--font-title)',
+                fontSize: '0.78rem',
+                letterSpacing: '0.04em',
+                color: 'rgba(244,241,234,0.28)',
+              }}>
+                Annecy, France
+              </li>
             </ul>
             <a
               href="#contact"
-              className="inline-flex items-center gap-2 mt-5 px-5 py-2.5 rounded-full text-sm font-semibold"
-              style={{ background: t.accent, color: t.onAccent }}
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                fontFamily: 'var(--font-title)',
+                fontSize: '0.62rem',
+                fontWeight: 700,
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                color: t.accent,
+                textDecoration: 'none',
+                paddingBottom: '2px',
+                borderBottom: `1px solid ${t.accent}`,
+                transition: 'opacity 0.2s',
+              }}
+              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = '0.65'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = '1'; }}
             >
-              <span>Demander un devis</span>
+              Demander un devis →
             </a>
           </div>
         </div>
 
+        {/* Legal bar */}
         <div
-          className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4"
-          style={{ borderTop: `1px solid ${t.borderSubtle}` }}
+          className="py-6 flex flex-col md:flex-row items-center justify-between gap-4"
         >
-          <p className="text-xs" style={{ color: t.footerLegal }}>
+          <p style={{
+            fontFamily: 'var(--font-title)',
+            fontSize: '0.58rem',
+            letterSpacing: '0.1em',
+            color: 'rgba(244,241,234,0.22)',
+          }}>
             © {new Date().getFullYear()} Qamar Web — Tous droits réservés.
           </p>
-          <div className="flex gap-6">
+          <div style={{ display: 'flex', gap: '1.5rem' }}>
             {LEGAL_LINKS.map(item => (
               <a
                 key={item}
                 href="#"
-                className="text-xs transition-colors"
-                style={{ color: t.footerLegal }}
+                style={{
+                  fontFamily: 'var(--font-title)',
+                  fontSize: '0.58rem',
+                  letterSpacing: '0.1em',
+                  color: 'rgba(244,241,234,0.22)',
+                  textDecoration: 'none',
+                  transition: 'color 0.2s',
+                }}
                 onMouseEnter={e => ((e.target as HTMLElement).style.color = t.accent)}
-                onMouseLeave={e => ((e.target as HTMLElement).style.color = t.footerLegal)}
+                onMouseLeave={e => ((e.target as HTMLElement).style.color = 'rgba(244,241,234,0.22)')}
               >
                 {item}
               </a>

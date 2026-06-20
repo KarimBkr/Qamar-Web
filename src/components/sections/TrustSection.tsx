@@ -1,33 +1,60 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { getGlassStyle } from '@/constants/colors';
 import { fadeUp } from '@/constants/animations';
 import { useTheme } from '@/hooks/use-theme';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
-import { trustStats } from '@/data/trust';
+
+const STATS = [
+  { value: '+50', label: 'Projets réalisés' },
+  { value: '100%', label: 'Satisfaction client' },
+  { value: '< 3s', label: 'Chargement moyen' },
+];
 
 export const TrustSection: React.FC = () => {
   const { tokens: t } = useTheme();
-  const glass = getGlassStyle(t);
 
   return (
-    <section className="py-16 relative" style={{ background: t.canvas }}>
-      <div className="max-w-5xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {trustStats.map((stat, i) => (
+    <section
+      style={{
+        background: t.surface,
+        borderTop: `1px solid ${t.borderSubtle}`,
+        borderBottom: `1px solid ${t.borderSubtle}`,
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-6 md:px-10">
+        <div className="grid grid-cols-3">
+          {STATS.map((stat, i) => (
             <AnimatedSection key={stat.label}>
               <motion.div
                 variants={fadeUp}
-                custom={i * 0.1}
-                className="text-center p-8 rounded-2xl"
-                style={glass}
-                whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
+                custom={i * 0.08}
+                className="py-10 md:py-14 text-center"
+                style={{
+                  borderRight: i < 2 ? `1px solid ${t.borderSubtle}` : 'none',
+                }}
               >
-                <stat.icon size={32} className="mx-auto mb-4" style={{ color: t.accent }} />
-                <div className="text-5xl font-bold mb-2" style={{ color: t.ink }}>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-title)',
+                    fontSize: 'clamp(2rem, 4.5vw, 3.8rem)',
+                    fontWeight: 900,
+                    letterSpacing: '-0.02em',
+                    color: '#f4f1ea',
+                    lineHeight: 1,
+                    marginBottom: '0.45rem',
+                  }}
+                >
                   {stat.value}
                 </div>
-                <div className="text-sm font-medium" style={{ color: t.muted }}>
+                <div
+                  style={{
+                    fontFamily: 'var(--font-title)',
+                    fontSize: '0.58rem',
+                    letterSpacing: '0.2em',
+                    textTransform: 'uppercase',
+                    color: 'rgba(244,241,234,0.38)',
+                  }}
+                >
                   {stat.label}
                 </div>
               </motion.div>

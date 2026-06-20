@@ -1,420 +1,199 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronLeft, ChevronRight, ArrowRight, ExternalLink, ChevronDown } from 'lucide-react';
-import { getGlassStyle } from '@/constants/colors';
-import type { ThemeTokens } from '@/constants/colors';
+import { ExternalLink } from 'lucide-react';
+import { fadeUp } from '@/constants/animations';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { projects } from '@/data/projects';
 import { useTheme } from '@/hooks/use-theme';
 import type { Project } from '@/types';
 
-const VISIBLE_COUNT = 3;
-
-/** Chevauchement entre cartes (style pile Wallet). */
-const STACK_OVERLAP = 40;
-const COLLAPSED_PX = 56;
-const EXPANDED_PX = 252;
-
-interface ProjectCarouselCardProps {
+interface ProjectCardProps {
   project: Project;
-  isHovered: boolean;
-  onMouseEnter: () => void;
-  onMouseLeave: () => void;
-  t: ThemeTokens;
+  index: number;
+  t: ReturnType<typeof useTheme>['tokens'];
 }
 
-const ProjectCarouselCard: React.FC<ProjectCarouselCardProps> = ({
-  project,
-  isHovered,
-  onMouseEnter,
-  onMouseLeave,
-  t,
-}) => {
-  const cardContent = (
+const ProjectCard: React.FC<ProjectCardProps> = ({ project, index, t }) => {
+  const [hovered, setHovered] = useState(false);
+  const num = String(index + 1).padStart(2, '0');
+
+  const media = project.video ? (
+    <video
+      src={project.video}
+      autoPlay loop muted playsInline preload="metadata"
+      style={{
+        position: 'absolute', inset: 0,
+        width: '100%', height: '100%',
+        objectFit: 'cover',
+        filter: 'grayscale(50%) brightness(0.65)',
+        transition: 'filter 0.6s ease',
+      }}
+    />
+  ) : project.image ? (
+    <img
+      src={project.image}
+      alt={project.name}
+      style={{
+        position: 'absolute', inset: 0,
+        width: '100%', height: '100%',
+        objectFit: 'cover',
+        objectPosition: 'top',
+        filter: 'grayscale(50%) brightness(0.65)',
+        transition: 'filter 0.6s ease',
+      }}
+    />
+  ) : null;
+
+  const inner = (
     <>
-      {project.video ? (
-        <video
-          src={project.video}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          className="absolute inset-0 w-full h-full object-contain"
-          style={{ opacity: 0.85 }}
-        />
-      ) : project.image ? (
-        <img
-          src={project.image}
-          alt={`Aperçu du site ${project.name}`}
-          className="absolute inset-0 w-full h-full object-cover object-top"
-          style={{ opacity: 0.85 }}
-        />
-      ) : null}
-
+      {/* Media */}
       <div
-        className="absolute inset-0"
         style={{
-          background: (project.image || project.video)
-            ? 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.65) 100%)'
-            : project.gradient,
+          position: 'relative',
+          width: '100%',
+          aspectRatio: '16 / 10',
+          overflow: 'hidden',
+          background: project.gradient,
         }}
-      />
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        {media}
 
-      <div className="relative p-8 h-full flex flex-col justify-between" style={{ minHeight: 280 }}>
-        <div className="text-5xl">{project.emoji}</div>
-        <div>
-          <div
-            className="text-xs font-semibold tracking-widest uppercase mb-2 px-3 py-1 rounded-full inline-block"
-            style={{ background: t.projectChipBg, color: t.accent }}
-          >
-            {project.type}
-          </div>
-          <div className="flex items-center gap-2">
-            <h3 className="text-2xl font-bold" style={{ color: t.textOnImage }}>
-              {project.name}
-            </h3>
-            {project.url && <ExternalLink size={16} style={{ color: t.textOnImageFaint }} />}
-          </div>
-        </div>
+        {/* Overlay gradient */}
+        <div
+          style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(to bottom, transparent 55%, rgba(10,10,11,0.7) 100%)',
+          }}
+        />
+
+        {/* Hover CTA */}
+        <AnimatePresence>
+          {hovered && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              style={{
+                position: 'absolute', inset: 0,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: 'rgba(10,10,11,0.45)',
+              }}
+            >
+              <span style={{
+                fontFamily: 'var(--font-title)',
+                fontSize: '0.65rem',
+                fontWeight: 700,
+                letterSpacing: '0.22em',
+                textTransform: 'uppercase',
+                color: '#f4f1ea',
+                display: 'flex', alignItems: 'center', gap: '0.5rem',
+                paddingBottom: 2,
+                borderBottom: `1px solid ${t.accent}`,
+              }}>
+                {project.url ? 'Voir le site' : 'Voir le projet'}
+                <ExternalLink size={11} />
+              </span>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      <AnimatePresence>
-        {isHovered && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 flex items-center justify-center rounded-2xl"
-            style={{ background: t.overlayScrim, backdropFilter: 'blur(4px)' }}
-          >
-            <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              className="px-6 py-3 rounded-full font-semibold flex items-center gap-2"
-              style={{ background: t.accent, color: t.onAccent }}
-            >
-              <span>{project.url ? 'Voir le site' : 'Voir le projet'}</span>
-              <ArrowRight size={16} />
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Infos */}
+      <div
+        style={{
+          padding: '1rem 0 1.5rem',
+          display: 'flex',
+          alignItems: 'baseline',
+          gap: '1rem',
+          borderBottom: `1px solid ${t.borderSubtle}`,
+        }}
+      >
+        <span style={{
+          fontFamily: 'var(--font-title)',
+          fontSize: '0.55rem',
+          fontWeight: 600,
+          letterSpacing: '0.2em',
+          color: t.accent,
+          flexShrink: 0,
+        }}>
+          {num}
+        </span>
+        <h3 style={{
+          fontFamily: 'var(--font-title)',
+          fontSize: 'clamp(1.1rem, 2.2vw, 1.5rem)',
+          fontWeight: 900,
+          letterSpacing: '-0.01em',
+          textTransform: 'uppercase',
+          color: '#f4f1ea',
+          flex: 1,
+          lineHeight: 1,
+        }}>
+          {project.name}
+        </h3>
+        <span style={{
+          fontFamily: 'var(--font-title)',
+          fontSize: '0.58rem',
+          letterSpacing: '0.14em',
+          textTransform: 'uppercase',
+          color: 'rgba(244,241,234,0.35)',
+          flexShrink: 0,
+        }}>
+          {project.type}
+        </span>
+      </div>
     </>
   );
 
-  const sharedProps = {
-    className: 'relative rounded-2xl overflow-hidden flex-1',
-    style: {
-      background: project.gradient,
-      minHeight: 280,
-      border: `1px solid ${t.borderSubtle}`,
-      cursor: 'pointer',
-    } as React.CSSProperties,
-    onMouseEnter,
-    onMouseLeave,
-  };
-
   if (project.url) {
     return (
-      <a href={project.url} target="_blank" rel="noopener noreferrer" {...sharedProps}>
-        {cardContent}
+      <a
+        href={project.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{ textDecoration: 'none', display: 'block' }}
+      >
+        {inner}
       </a>
     );
   }
 
-  return <div {...sharedProps}>{cardContent}</div>;
+  return <div style={{ display: 'block' }}>{inner}</div>;
 };
-
-interface ProjectWalletCardProps {
-  project: Project;
-  index: number;
-  isExpanded: boolean;
-  onSelect: () => void;
-  t: ThemeTokens;
-}
-
-const ProjectWalletCard: React.FC<ProjectWalletCardProps> = ({
-  project,
-  index,
-  isExpanded,
-  onSelect,
-  t,
-}) => {
-  const shadow =
-    '0 14px 36px rgba(0,0,0,0.22), 0 4px 12px rgba(0,0,0,0.12), inset 0 1px 0 rgba(255,255,255,0.12)';
-
-  const collapsedStrip = (
-    <div
-      className="absolute inset-0 flex items-center justify-between gap-3 px-4"
-      style={{
-        background: project.gradient,
-        boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.14)',
-      }}
-    >
-      <div className="flex items-center gap-2.5 min-w-0">
-        <span className="text-xl shrink-0 leading-none" aria-hidden>
-          {project.emoji}
-        </span>
-        <span className="text-sm font-semibold truncate" style={{ color: t.textOnImage }}>
-          {project.name}
-        </span>
-      </div>
-      <ChevronDown
-        size={18}
-        className="shrink-0 opacity-80"
-        style={{ color: t.textOnImageFaint }}
-        aria-hidden
-      />
-    </div>
-  );
-
-  const expandedBody = (
-    <>
-      {project.video ? (
-        <video
-          src={project.video}
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          className="absolute inset-0 w-full h-full object-contain"
-          style={{ opacity: 0.9 }}
-        />
-      ) : project.image ? (
-        <img
-          src={project.image}
-          alt=""
-          className="absolute inset-0 w-full h-full object-cover object-top"
-          style={{ opacity: 0.9 }}
-        />
-      ) : null}
-      <div
-        className="absolute inset-0"
-        style={{
-          background: (project.image || project.video)
-            ? 'linear-gradient(165deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.75) 100%)'
-            : project.gradient,
-          boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.1)',
-        }}
-      />
-      <div className="relative h-full flex flex-col justify-between p-5 pt-4">
-        <div className="text-3xl drop-shadow-sm">{project.emoji}</div>
-        <div className="space-y-3">
-          <div
-            className="text-[10px] font-semibold tracking-wider uppercase px-2 py-1 rounded-md inline-block"
-            style={{ background: t.projectChipBg, color: t.accent }}
-          >
-            {project.type}
-          </div>
-          <h3 className="text-lg font-bold leading-tight pr-6" style={{ color: t.textOnImage }}>
-            {project.name}
-          </h3>
-          {project.url ? (
-            <a
-              href={project.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={e => e.stopPropagation()}
-              className="inline-flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-full w-fit"
-              style={{ background: t.accent, color: t.onAccent }}
-            >
-              <span>Voir le site</span>
-              <ExternalLink size={14} />
-            </a>
-          ) : (
-            <p className="text-xs leading-relaxed" style={{ color: t.textOnImageFaint }}>
-              Projet concept — démo de notre approche design &amp; produit.
-            </p>
-          )}
-        </div>
-      </div>
-    </>
-  );
-
-  return (
-    <motion.article
-      className="relative w-full rounded-[1.75rem] overflow-hidden cursor-pointer select-none border"
-      style={{
-        zIndex: index + 1,
-        marginTop: index === 0 ? 0 : -STACK_OVERLAP,
-        borderColor: t.borderSubtle,
-        boxShadow: shadow,
-      }}
-      initial={false}
-      animate={{
-        height: isExpanded ? EXPANDED_PX : COLLAPSED_PX,
-      }}
-      transition={{ type: 'spring', stiffness: 420, damping: 36 }}
-      onClick={onSelect}
-      onKeyDown={e => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          onSelect();
-        }
-      }}
-      role="button"
-      tabIndex={0}
-      aria-expanded={isExpanded}
-      aria-label={`${project.name}, ${project.type}${isExpanded ? ', développé' : ', replié'}. Appuyer pour développer.`}
-    >
-      <AnimatePresence initial={false} mode="wait">
-        {isExpanded ? (
-          <motion.div
-            key="expanded"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="absolute inset-0"
-          >
-            {expandedBody}
-          </motion.div>
-        ) : (
-          <motion.div
-            key="collapsed"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
-            className="absolute inset-0"
-          >
-            {collapsedStrip}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.article>
-  );
-};
-
-function ProjectWalletStack({ t }: { t: ThemeTokens }) {
-  const [expandedIdx, setExpandedIdx] = useState(() => Math.max(0, projects.length - 1));
-
-  return (
-    <div className="mx-auto max-w-md pb-4 pt-1">
-      {projects.map((project, i) => (
-        <ProjectWalletCard
-          key={project.name}
-          project={project}
-          index={i}
-          isExpanded={expandedIdx === i}
-          onSelect={() => setExpandedIdx(i)}
-          t={t}
-        />
-      ))}
-    </div>
-  );
-}
 
 export const ProjectsSection: React.FC = () => {
   const { tokens: t } = useTheme();
-  const glass = getGlassStyle(t);
-  const [currentIdx, setCurrentIdx] = useState(0);
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-  const maxIdx = Math.max(0, projects.length - VISIBLE_COUNT);
-
-  const handlePrev = () => setCurrentIdx(p => Math.max(0, p - 1));
-  const handleNext = () => setCurrentIdx(p => Math.min(maxIdx, p + 1));
 
   return (
     <section
       id="projets"
-      className="py-24 relative overflow-hidden"
-      style={{ background: t.canvas }}
+      className="py-24 relative"
+      style={{ background: t.surface }}
     >
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: `radial-gradient(ellipse at 100% 50%, ${t.radialAccent} 0%, transparent 60%)`,
-        }}
-      />
-
-      <div className="max-w-7xl mx-auto px-6 relative">
+      <div className="max-w-7xl mx-auto px-6 md:px-10">
         <AnimatedSection>
           <SectionTitle
             label="Nos Projets"
             title="Réalisations récentes"
-            subtitle="Découvrez quelques-uns des projets que nous avons conçus et développés pour nos clients."
+            subtitle="Quelques projets que nous avons conçus et développés pour nos clients."
           />
         </AnimatedSection>
 
-        {/* Pile type Apple Wallet — mobile & tablette */}
-        <div className="lg:hidden">
-          <AnimatedSection>
-            <ProjectWalletStack t={t} />
-          </AnimatedSection>
-        </div>
-
-        <div className="relative hidden lg:block">
-          <div className="overflow-hidden">
-            <motion.div
-              className="flex gap-6"
-              animate={{ x: `${-(currentIdx * (100 / VISIBLE_COUNT + 2))}%` }}
-              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-              style={{ width: `${(projects.length / VISIBLE_COUNT) * 100}%` }}
-            >
-              {projects.map((project, i) => (
-                <ProjectCarouselCard
-                  key={project.name}
-                  project={project}
-                  isHovered={hoveredIdx === i}
-                  onMouseEnter={() => setHoveredIdx(i)}
-                  onMouseLeave={() => setHoveredIdx(null)}
-                  t={t}
-                />
-              ))}
-            </motion.div>
-          </div>
-
-          <div className="flex items-center justify-center gap-4 mt-8">
-            <button
-              type="button"
-              onClick={handlePrev}
-              disabled={currentIdx === 0}
-              className="w-12 h-12 rounded-full flex items-center justify-center transition-all"
-              style={{
-                ...glass,
-                color: currentIdx === 0 ? t.textDisabled : t.ink,
-                opacity: currentIdx === 0 ? 0.5 : 1,
-              }}
-              aria-label="Projet précédent"
-            >
-              <ChevronLeft size={20} />
-            </button>
-
-            <div className="flex gap-2">
-              {Array.from({ length: maxIdx + 1 }).map((_, i) => (
-                <button
-                  type="button"
-                  key={`dot-${i}`}
-                  onClick={() => setCurrentIdx(i)}
-                  className="h-2 rounded-full transition-all duration-200"
-                  style={{
-                    background: i === currentIdx ? t.accent : t.projectNavInactive,
-                    width: i === currentIdx ? 24 : 8,
-                  }}
-                  aria-label={`Groupe de projets ${i + 1}`}
-                />
-              ))}
-            </div>
-
-            <button
-              type="button"
-              onClick={handleNext}
-              disabled={currentIdx === maxIdx}
-              className="w-12 h-12 rounded-full flex items-center justify-center transition-all"
-              style={{
-                ...glass,
-                color: currentIdx === maxIdx ? t.textDisabled : t.ink,
-                opacity: currentIdx === maxIdx ? 0.5 : 1,
-              }}
-              aria-label="Projet suivant"
-            >
-              <ChevronRight size={20} />
-            </button>
-          </div>
+        {/* Grille éditoriale — 1 col mobile, 2 col md+ */}
+        <div
+          className="grid grid-cols-1 md:grid-cols-2"
+          style={{ gap: '0 3rem' }}
+        >
+          {projects.map((project, i) => (
+            <AnimatedSection key={project.name}>
+              <motion.div variants={fadeUp} custom={i * 0.08}>
+                <ProjectCard project={project} index={i} t={t} />
+              </motion.div>
+            </AnimatedSection>
+          ))}
         </div>
       </div>
     </section>

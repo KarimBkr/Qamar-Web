@@ -41,7 +41,9 @@ export interface Project {
 
 export interface Plan {
   name: string;
+  description: string;
   price: string;
+  delivery: string;
   badge: string | null;
   badgeColor: string | null;
   accentColor: string;
@@ -51,7 +53,7 @@ export interface Plan {
 }
 
 export interface Upsell {
-  icon: LucideIcon;
+  icon?: LucideIcon;
   title: string;
   price: string;
   desc: string;

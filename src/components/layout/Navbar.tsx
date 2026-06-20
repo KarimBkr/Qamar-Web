@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ArrowRight, Moon, Sun } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useTheme } from '@/hooks/use-theme';
 import { NAV_LINKS, NAV_SECTION_MAP } from '@/constants/navigation';
 import { useScrollProgress } from '@/hooks/use-scroll-progress';
@@ -16,102 +16,79 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({
   scrolled,
   activeSection,
-  mobileMenuOpen,
   onMobileMenuOpenChange,
 }) => {
   const scrollProgress = useScrollProgress();
-  const { tokens: t, mode, toggleTheme } = useTheme();
+  const { tokens: t } = useTheme();
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const navigateToSection = useCallback(
-    (sectionId: string) => {
-      onMobileMenuOpenChange(false);
-      scheduleScrollToSectionId(sectionId, 50);
-    },
-    [onMobileMenuOpenChange]
-  );
+  const openMenu  = useCallback(() => { setMenuOpen(true);  onMobileMenuOpenChange(true);  }, [onMobileMenuOpenChange]);
+  const closeMenu = useCallback(() => { setMenuOpen(false); onMobileMenuOpenChange(false); }, [onMobileMenuOpenChange]);
+
+  const navigateToSection = useCallback((sectionId: string) => {
+    closeMenu();
+    scheduleScrollToSectionId(sectionId, 50);
+  }, [closeMenu]);
 
   useEffect(() => {
-    if (!mobileMenuOpen) return;
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onMobileMenuOpenChange(false);
-    };
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') closeMenu(); };
     window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [closeMenu]);
 
-    const mq = window.matchMedia('(min-width: 768px)');
-    const onMq = () => {
-      if (mq.matches) onMobileMenuOpenChange(false);
-    };
-    mq.addEventListener('change', onMq);
-
-    return () => {
-      document.body.style.overflow = prevOverflow;
-      window.removeEventListener('keydown', onKey);
-      mq.removeEventListener('change', onMq);
-    };
-  }, [mobileMenuOpen, onMobileMenuOpenChange]);
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [menuOpen]);
 
   return (
     <>
-      <div
-        className="pointer-events-none fixed top-0 left-0 right-0 z-[51] h-1 md:hidden overflow-hidden"
-        aria-hidden
-      >
+      {/* Scroll progress line */}
+      <div className="pointer-events-none fixed top-0 left-0 right-0 z-[9980] h-[1px] overflow-hidden" aria-hidden>
         <div
-          className="h-full rounded-none origin-left transition-[width] duration-150 ease-out"
           style={{
+            height: '100%',
             width: `${Math.min(100, scrollProgress * 100)}%`,
             background: t.accent,
+            transition: 'width 100ms linear',
           }}
         />
       </div>
 
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.button
-            type="button"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 md:hidden cursor-pointer border-0 p-0"
-            style={{ background: 'rgba(0,0,0,0.45)' }}
-            aria-label="Fermer le menu"
-            onClick={() => onMobileMenuOpenChange(false)}
-          />
-        )}
-      </AnimatePresence>
-
-      <motion.nav
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+      {/* ── Navbar strip ── */}
+      <motion.header
+        initial={{ y: -60, opacity: 0 }}
+        animate={{ y: 0, opacity: menuOpen ? 0 : 1 }}
+        transition={{ duration: menuOpen ? 0.2 : 0.7, ease: [0.22, 1, 0.36, 1] }}
+        className="fixed top-0 left-0 right-0 z-[9970]"
         style={{
-          background: scrolled ? t.navSolid : 'transparent',
+          background: scrolled ? 'rgba(10,10,11,0.88)' : 'transparent',
           backdropFilter: scrolled ? 'blur(20px)' : 'none',
           WebkitBackdropFilter: scrolled ? 'blur(20px)' : 'none',
-          borderBottom: scrolled ? `1px solid ${t.navBorder}` : 'none',
+          borderBottom: scrolled ? '1px solid rgba(244,241,234,0.05)' : 'none',
+          pointerEvents: menuOpen ? 'none' : 'auto',
         }}
       >
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
+        <div className="px-6 md:px-10 py-5 flex items-center justify-between">
+          {/* Logo */}
           <a
             href="#accueil"
-            className="text-2xl font-bold shrink-0"
-            style={{ color: t.ink }}
-            onClick={e => {
-              if (mobileMenuOpen) {
-                e.preventDefault();
-                navigateToSection('accueil');
-              }
+            style={{
+              fontFamily: 'var(--font-title)',
+              fontSize: '1rem',
+              fontWeight: 800,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: '#f4f1ea',
+              textDecoration: 'none',
             }}
+            onClick={e => { if (menuOpen) { e.preventDefault(); navigateToSection('accueil'); } }}
           >
-            Qamar<span style={{ color: t.accent }}>.</span>Web
+            QAMAR<span style={{ color: t.accent }}>.</span>WEB
           </a>
 
-          <nav className="hidden md:flex items-center gap-8 flex-1 justify-center">
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-8">
             {NAV_LINKS.map(link => {
               const sectionId = NAV_SECTION_MAP[link];
               const isActive = activeSection === sectionId;
@@ -119,137 +96,236 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <a
                   key={link}
                   href={`#${sectionId}`}
-                  className="relative text-sm font-medium transition-colors duration-200"
-                  style={{ color: isActive ? t.accent : t.textSecondary }}
-                  onMouseEnter={e => {
-                    if (!isActive) (e.target as HTMLElement).style.color = t.ink;
+                  style={{
+                    fontFamily: 'var(--font-title)',
+                    fontSize: '0.65rem',
+                    letterSpacing: '0.2em',
+                    textTransform: 'uppercase',
+                    color: isActive ? '#f4f1ea' : 'rgba(244,241,234,0.38)',
+                    textDecoration: 'none',
+                    transition: 'color 0.2s',
+                    paddingBottom: 2,
+                    borderBottom: isActive ? `1px solid ${t.accent}` : '1px solid transparent',
                   }}
+                  onMouseEnter={e => { (e.target as HTMLElement).style.color = '#f4f1ea'; }}
                   onMouseLeave={e => {
-                    if (!isActive) (e.target as HTMLElement).style.color = t.textSecondary;
+                    if (!isActive) (e.target as HTMLElement).style.color = 'rgba(244,241,234,0.38)';
                   }}
                 >
                   {link}
-                  {isActive && (
-                    <motion.div
-                      layoutId="nav-indicator"
-                      className="absolute -bottom-1 left-0 right-0 h-0.5 rounded-full"
-                      style={{ background: t.accent }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                    />
-                  )}
                 </a>
               );
             })}
           </nav>
 
-          <div className="hidden md:flex items-center gap-3 shrink-0">
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="flex items-center justify-center w-10 h-10 rounded-full transition-all hover:scale-105"
-              style={{
-                border: `1px solid ${t.borderMedium}`,
-                color: t.ink,
-                background: t.fillSubtle,
-              }}
-              aria-label={mode === 'light' ? 'Activer le thème sombre' : 'Activer le thème clair'}
-            >
-              {mode === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-            </button>
+          {/* CTA + Burger */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
             <a
               href="#contact"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition-all duration-200 hover:scale-105 hover:shadow-lg"
+              className="hidden md:inline-block"
               style={{
-                background: t.accent,
-                color: t.onAccent,
-                boxShadow: `0 0 24px ${t.accentGlow}`,
+                fontFamily: 'var(--font-title)',
+                fontSize: '0.62rem',
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                color: t.accent,
+                textDecoration: 'none',
+                transition: 'opacity 0.2s',
               }}
+              onMouseEnter={e => { (e.target as HTMLElement).style.opacity = '0.65'; }}
+              onMouseLeave={e => { (e.target as HTMLElement).style.opacity = '1'; }}
             >
-              <span>Demander un devis</span>
-              <ArrowRight size={14} />
+              Devis gratuit →
             </a>
-          </div>
 
-          <div className="flex md:hidden items-center gap-2 relative z-10">
+            {/* Circular burger button — Ownitt style */}
             <button
               type="button"
-              onClick={toggleTheme}
-              className="flex items-center justify-center w-10 h-10 rounded-full"
+              onClick={menuOpen ? closeMenu : openMenu}
+              aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+              aria-expanded={menuOpen}
               style={{
-                border: `1px solid ${t.borderMedium}`,
-                color: t.ink,
-                background: t.fillSubtle,
+                position: 'relative',
+                width: 54, height: 54,
+                borderRadius: '50%',
+                border: menuOpen ? '1px solid rgba(0,0,0,0.2)' : '1px solid rgba(244,241,234,0.28)',
+                background: 'transparent',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 7,
+                cursor: 'none',
+                overflow: 'hidden',
+                animation: menuOpen ? 'none' : 'ringPulse 2.5s ease-in-out infinite',
+                transition: 'border-color 0.4s',
               }}
-              aria-label={mode === 'light' ? 'Thème sombre' : 'Thème clair'}
             >
-              {mode === 'light' ? <Moon size={18} /> : <Sun size={18} />}
-            </button>
-            <button
-              type="button"
-              style={{ color: t.ink }}
-              onClick={() => onMobileMenuOpenChange(!mobileMenuOpen)}
-              aria-expanded={mobileMenuOpen}
-              aria-controls="mobile-nav-panel"
-              aria-label={mobileMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
-            >
-              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              {/* Hover fill — cream slides up */}
+              <span
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  borderRadius: '50%',
+                  background: '#f4f1ea',
+                  transform: 'translateY(102%)',
+                  transition: 'transform 0.55s cubic-bezier(0.65,0,0.35,1)',
+                  zIndex: 0,
+                }}
+                className="burger-fill"
+              />
+
+              {/* Lines */}
+              {[0, 1].map(i => (
+                <span
+                  key={i}
+                  style={{
+                    position: 'relative',
+                    zIndex: 1,
+                    display: 'block',
+                    height: 2,
+                    width: menuOpen ? 22 : (i === 0 ? 26 : 17),
+                    background: '#f4f1ea',
+                    borderRadius: 999,
+                    transformOrigin: '50%',
+                    transition: 'width 0.45s cubic-bezier(0.16,1,0.3,1), transform 0.5s cubic-bezier(0.77,0,0.175,1), background 0.4s',
+                    transform: menuOpen
+                      ? i === 0 ? 'translateY(4.5px) rotate(45deg)' : 'translateY(-4.5px) rotate(-45deg)'
+                      : 'none',
+                  }}
+                />
+              ))}
+
+              <style>{`
+                button:hover .burger-fill { transform: translateY(0) !important; }
+                button:hover span[style*="border-radius: 999px"] { background: #0a0a0b !important; }
+              `}</style>
             </button>
           </div>
         </div>
+      </motion.header>
 
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <motion.div
-              id="mobile-nav-panel"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="md:hidden overflow-hidden px-6 pb-6 relative z-10"
-              style={{
-                background: t.navMobileBg,
-                borderBottom: `1px solid ${t.borderSubtle}`,
-              }}
+      {/* ── Full-screen overlay menu ── */}
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            key="overlay"
+            className="fixed inset-0 flex flex-col overflow-hidden"
+            style={{ background: '#0a0a0b', zIndex: 9975 }}
+            initial={{ clipPath: 'inset(0 0 100% 0)' }}
+            animate={{ clipPath: 'inset(0 0 0% 0)' }}
+            exit={{ clipPath: 'inset(0 0 100% 0)' }}
+            transition={{ duration: 0.65, ease: [0.76, 0, 0.24, 1] }}
+          >
+            <div className="grain-overlay" style={{ zIndex: 1 }} />
+
+            {/* Header */}
+            <div
+              className="flex items-center justify-between px-6 md:px-10 py-5 relative"
+              style={{ zIndex: 2, borderBottom: '1px solid rgba(244,241,234,0.06)' }}
             >
-              {NAV_LINKS.map(link => {
+              <span style={{
+                fontFamily: 'var(--font-title)',
+                fontSize: '1rem',
+                fontWeight: 800,
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase',
+                color: '#f4f1ea',
+              }}>
+                QAMAR<span style={{ color: t.accent }}>.</span>WEB
+              </span>
+              <button
+                type="button"
+                onClick={closeMenu}
+                style={{ background: 'none', border: 'none', color: '#f4f1ea', cursor: 'none', padding: 0 }}
+                aria-label="Fermer"
+              >
+                <X size={22} />
+              </button>
+            </div>
+
+            {/* Navigation links */}
+            <nav
+              className="flex-1 flex flex-col justify-center px-6 md:px-10 relative"
+              style={{ zIndex: 2 }}
+            >
+              {NAV_LINKS.map((link, i) => {
                 const sectionId = NAV_SECTION_MAP[link];
-                const isActive = activeSection === sectionId;
                 return (
-                  <a
+                  <motion.a
                     key={link}
                     href={`#${sectionId}`}
-                    className="flex items-center justify-between py-3 text-sm font-medium border-b"
+                    initial={{ opacity: 0, x: -24 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.4, delay: 0.18 + i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                    onClick={e => { e.preventDefault(); navigateToSection(sectionId); }}
+                    className="group flex items-baseline gap-5 py-3.5 transition-opacity"
                     style={{
-                      color: isActive ? t.accent : t.ink,
-                      borderColor: t.borderSubtle,
+                      textDecoration: 'none',
+                      borderBottom: '1px solid rgba(244,241,234,0.06)',
                     }}
-                    onClick={e => {
-                      e.preventDefault();
-                      navigateToSection(sectionId);
-                    }}
+                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.opacity = '0.5'; }}
+                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.opacity = '1'; }}
                   >
-                    <span>{link}</span>
-                    {isActive && (
-                      <div className="w-1.5 h-1.5 rounded-full" style={{ background: t.accent }} />
-                    )}
-                  </a>
+                    <span style={{
+                      fontFamily: 'var(--font-title)',
+                      fontSize: '0.52rem',
+                      letterSpacing: '0.22em',
+                      color: t.accent,
+                      minWidth: '1.5rem',
+                    }}>
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span style={{
+                      fontFamily: 'var(--font-title)',
+                      fontSize: 'clamp(2rem, 5.5vw, 4rem)',
+                      fontWeight: 700,
+                      letterSpacing: '0.02em',
+                      textTransform: 'uppercase',
+                      color: '#f4f1ea',
+                      lineHeight: 1.1,
+                    }}>
+                      {link}
+                    </span>
+                  </motion.a>
                 );
               })}
+            </nav>
+
+            {/* Footer */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+              className="px-6 md:px-10 py-6 flex items-center justify-between relative"
+              style={{ zIndex: 2, borderTop: '1px solid rgba(244,241,234,0.06)' }}
+            >
+              <em style={{
+                fontFamily: 'var(--font-text)',
+                fontStyle: 'italic',
+                fontSize: '0.85rem',
+                color: 'rgba(244,241,234,0.32)',
+              }}>
+                Tout commence par une conversation.
+              </em>
               <a
                 href="#contact"
-                className="inline-flex items-center gap-2 mt-4 px-5 py-2.5 rounded-full text-sm font-semibold"
-                style={{ background: t.accent, color: t.onAccent }}
-                onClick={e => {
-                  e.preventDefault();
-                  navigateToSection('contact');
+                onClick={e => { e.preventDefault(); navigateToSection('contact'); }}
+                style={{
+                  fontFamily: 'var(--font-title)',
+                  fontSize: '0.6rem',
+                  letterSpacing: '0.2em',
+                  textTransform: 'uppercase',
+                  color: t.accent,
+                  textDecoration: 'none',
                 }}
               >
-                <span>Demander un devis</span>
+                Nous contacter →
               </a>
             </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 };

@@ -1,7 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { User, Mail, FileText, ArrowRight, Twitter, Linkedin, Instagram } from 'lucide-react';
-import { getGlassStyle } from '@/constants/colors';
+import { ArrowRight, Twitter, Linkedin, Instagram } from 'lucide-react';
 import { fadeUp } from '@/constants/animations';
 import { useTheme } from '@/hooks/use-theme';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
@@ -13,17 +12,6 @@ interface FormState {
 }
 
 const INITIAL_FORM: FormState = { name: '', email: '', project: '' };
-
-const INPUT_FIELDS = [
-  { id: 'name' as const, label: 'Votre nom', placeholder: 'Jean Dupont', icon: User, type: 'text' },
-  {
-    id: 'email' as const,
-    label: 'Email professionnel',
-    placeholder: 'jean@entreprise.com',
-    icon: Mail,
-    type: 'email',
-  },
-] as const;
 
 const TiktokIcon = ({ size = 20 }: { size?: number }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -39,25 +27,31 @@ const WhatsappIcon = ({ size = 20 }: { size?: number }) => (
 );
 
 const SOCIAL_LINKS = [
-  { name: 'Twitter', icon: Twitter, href: '#' },
-  { name: 'LinkedIn', icon: Linkedin, href: '#' },
-  { name: 'Instagram', icon: Instagram, href: '#' },
-  { name: 'TikTok', icon: TiktokIcon, href: '#' },
+  { name: 'Twitter',   icon: Twitter,      href: '#' },
+  { name: 'LinkedIn',  icon: Linkedin,     href: '#' },
+  { name: 'Instagram', icon: Instagram,    href: '#' },
+  { name: 'TikTok',   icon: TiktokIcon,   href: '#' },
   { name: 'WhatsApp', icon: WhatsappIcon, href: '#' },
 ];
 
+/* Style commun des champs — border-bottom only (éditorial) */
+const inputLineStyle: React.CSSProperties = {
+  display: 'block',
+  width: '100%',
+  background: 'transparent',
+  border: 'none',
+  borderBottom: '1px solid rgba(244,241,234,0.12)',
+  outline: 'none',
+  padding: '0.75rem 0',
+  fontFamily: 'var(--font-text)',
+  fontSize: '1.05rem',
+  color: '#f4f1ea',
+  transition: 'border-color 0.2s',
+  resize: 'none',
+};
+
 export const ContactSection: React.FC = () => {
   const { tokens: t } = useTheme();
-  const glass = getGlassStyle(t);
-  const inputBaseStyle = useMemo<React.CSSProperties>(
-    () => ({
-      background: t.surface,
-      border: `1px solid ${t.inputBorderBlur}`,
-      color: t.ink,
-    }),
-    [t.surface, t.inputBorderBlur, t.ink]
-  );
-
   const [form, setForm] = useState<FormState>(INITIAL_FORM);
   const [sent, setSent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -71,14 +65,10 @@ export const ContactSection: React.FC = () => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(false);
-
     try {
       const response = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
         body: JSON.stringify({
           access_key: import.meta.env.VITE_WEB3FORMS_ACCESS_KEY,
           subject: 'Nouveau message depuis Qamar Web !',
@@ -88,9 +78,7 @@ export const ContactSection: React.FC = () => {
           message: form.project,
         }),
       });
-
       const result = await response.json();
-
       if (result.success) {
         setSent(true);
         setForm(INITIAL_FORM);
@@ -107,160 +95,229 @@ export const ContactSection: React.FC = () => {
   };
 
   return (
-    <section id="contact" className="py-24 relative" style={{ background: t.canvas }}>
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: `radial-gradient(ellipse at 50% 100%, ${t.radialAccent} 0%, transparent 60%)`,
-        }}
-      />
+    <section id="contact" className="py-24 relative" style={{ background: t.surface }}>
+      <div className="max-w-4xl mx-auto px-6 md:px-10">
 
-      <div className="max-w-3xl mx-auto px-6 relative">
+        {/* Header */}
         <AnimatedSection>
-          <div className="text-center mb-12">
-            <span
-              className="inline-block text-xs font-semibold tracking-widest uppercase mb-4 px-4 py-2 rounded-full"
-              style={{
+          <motion.div variants={fadeUp} custom={0} style={{ marginBottom: '4rem' }}>
+            <div className="flex items-center gap-3 mb-6">
+              <div style={{ width: 32, height: 1, background: t.accent, flexShrink: 0 }} />
+              <span style={{
+                fontFamily: 'var(--font-title)',
+                fontSize: '0.6rem',
+                fontWeight: 600,
+                letterSpacing: '0.22em',
+                textTransform: 'uppercase',
                 color: t.accent,
-                background: t.accentSoft,
-                border: `1px solid ${t.accentBorder}`,
-              }}
-            >
-              Contact
-            </span>
-            <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: t.ink }}>
-              Prêt à lancer votre projet ?
+              }}>
+                Contact
+              </span>
+            </div>
+            <h2 style={{
+              fontFamily: 'var(--font-title)',
+              fontSize: 'clamp(2.5rem, 6vw, 5rem)',
+              fontWeight: 900,
+              letterSpacing: '-0.02em',
+              textTransform: 'uppercase',
+              color: '#f4f1ea',
+              lineHeight: 0.95,
+              marginBottom: '1.25rem',
+            }}>
+              Prêt à lancer<br />votre projet ?
             </h2>
-            <p className="text-base" style={{ color: t.muted }}>
+            <p style={{
+              fontFamily: 'var(--font-text)',
+              fontSize: 'clamp(1rem, 1.5vw, 1.2rem)',
+              fontStyle: 'italic',
+              color: 'rgba(244,241,234,0.48)',
+              lineHeight: 1.55,
+            }}>
               Parlez-nous de votre projet. Nous vous répondons sous 24h.
             </p>
-          </div>
+          </motion.div>
         </AnimatedSection>
 
+        {/* Formulaire */}
         <AnimatedSection>
           <motion.form
             variants={fadeUp}
             custom={0.1}
             onSubmit={handleSubmit}
-            className="p-8 rounded-3xl space-y-5"
-            style={{ ...glass, boxShadow: t.shadowLg }}
+            style={{ borderTop: `1px solid ${t.borderSubtle}`, paddingTop: '2.5rem' }}
           >
-            {INPUT_FIELDS.map(field => (
-              <div key={field.id}>
-                <label className="block text-sm font-medium mb-2" style={{ color: t.textLabel }}>
-                  {field.label}
+            <div className="grid md:grid-cols-2 gap-x-12 gap-y-8" style={{ marginBottom: '2rem' }}>
+              {/* Nom */}
+              <div>
+                <label style={{
+                  display: 'block',
+                  fontFamily: 'var(--font-title)',
+                  fontSize: '0.58rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.2em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(244,241,234,0.38)',
+                  marginBottom: '0.5rem',
+                }}>
+                  Votre nom
                 </label>
-                <div className="relative">
-                  <field.icon
-                    size={16}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none"
-                    style={{ color: t.muted }}
-                  />
-                  <input
-                    type={field.type}
-                    value={form[field.id]}
-                    onChange={handleChange(field.id)}
-                    placeholder={field.placeholder}
-                    required
-                    className="w-full py-3.5 pl-11 pr-4 rounded-xl text-sm outline-none transition-all"
-                    style={inputBaseStyle}
-                    onFocus={e => (e.currentTarget.style.borderColor = t.accent)}
-                    onBlur={e => (e.currentTarget.style.borderColor = t.inputBorderBlur)}
-                  />
-                </div>
-              </div>
-            ))}
-
-            <div>
-              <label className="block text-sm font-medium mb-2" style={{ color: t.textLabel }}>
-                Décrivez votre projet
-              </label>
-              <div className="relative">
-                <FileText
-                  size={16}
-                  className="absolute left-4 top-4 pointer-events-none"
-                  style={{ color: t.muted }}
-                />
-                <textarea
-                  value={form.project}
-                  onChange={handleChange('project')}
-                  placeholder="Type de projet, fonctionnalités souhaitées, budget estimé..."
+                <input
+                  type="text"
+                  value={form.name}
+                  onChange={handleChange('name')}
+                  placeholder="Jean Dupont"
                   required
-                  rows={4}
-                  className="w-full py-3.5 pl-11 pr-4 rounded-xl text-sm outline-none transition-all resize-none"
-                  style={inputBaseStyle}
-                  onFocus={e => (e.currentTarget.style.borderColor = t.accent)}
-                  onBlur={e => (e.currentTarget.style.borderColor = t.inputBorderBlur)}
+                  style={inputLineStyle}
+                  onFocus={e => (e.currentTarget.style.borderBottomColor = t.accent)}
+                  onBlur={e => (e.currentTarget.style.borderBottomColor = 'rgba(244,241,234,0.12)')}
+                />
+              </div>
+
+              {/* Email */}
+              <div>
+                <label style={{
+                  display: 'block',
+                  fontFamily: 'var(--font-title)',
+                  fontSize: '0.58rem',
+                  fontWeight: 600,
+                  letterSpacing: '0.2em',
+                  textTransform: 'uppercase',
+                  color: 'rgba(244,241,234,0.38)',
+                  marginBottom: '0.5rem',
+                }}>
+                  Email
+                </label>
+                <input
+                  type="email"
+                  value={form.email}
+                  onChange={handleChange('email')}
+                  placeholder="jean@entreprise.com"
+                  required
+                  style={inputLineStyle}
+                  onFocus={e => (e.currentTarget.style.borderBottomColor = t.accent)}
+                  onBlur={e => (e.currentTarget.style.borderBottomColor = 'rgba(244,241,234,0.12)')}
                 />
               </div>
             </div>
 
+            {/* Projet */}
+            <div style={{ marginBottom: '2.5rem' }}>
+              <label style={{
+                display: 'block',
+                fontFamily: 'var(--font-title)',
+                fontSize: '0.58rem',
+                fontWeight: 600,
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                color: 'rgba(244,241,234,0.38)',
+                marginBottom: '0.5rem',
+              }}>
+                Votre projet
+              </label>
+              <textarea
+                value={form.project}
+                onChange={handleChange('project')}
+                placeholder="Type de projet, fonctionnalités souhaitées, budget estimé..."
+                required
+                rows={4}
+                style={inputLineStyle}
+                onFocus={e => (e.currentTarget.style.borderBottomColor = t.accent)}
+                onBlur={e => (e.currentTarget.style.borderBottomColor = 'rgba(244,241,234,0.12)')}
+              />
+            </div>
+
+            {/* Submit */}
             <motion.button
               type="submit"
               disabled={isSubmitting}
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              className="w-full py-4 rounded-xl font-semibold text-base flex items-center justify-center gap-2 transition-all disabled:opacity-75 disabled:cursor-wait"
+              whileHover={{ opacity: 0.8 }}
+              whileTap={{ scale: 0.98 }}
               style={{
-                background: sent ? t.success : error ? t.danger : t.accent,
-                color: t.onAccent,
-                boxShadow: `0 8px 32px ${
-                  sent ? 'rgba(52,199,89,0.35)' : error ? 'rgba(255,59,48,0.35)' : t.accentGlow
-                }`,
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                padding: '1rem 2.5rem',
+                fontFamily: 'var(--font-title)',
+                fontSize: '0.7rem',
+                fontWeight: 700,
+                letterSpacing: '0.2em',
+                textTransform: 'uppercase',
+                background: sent ? '#34d399' : error ? '#ef4444' : t.accent,
+                color: '#f4f1ea',
+                border: 'none',
+                cursor: isSubmitting ? 'wait' : 'none',
+                transition: 'background 0.3s',
               }}
             >
               {isSubmitting ? (
-                <span className="animate-pulse">Envoi en cours...</span>
+                <span>Envoi en cours...</span>
               ) : sent ? (
-                <span>✓ Message envoyé avec succès !</span>
+                <span>Message envoyé</span>
               ) : error ? (
-                <span>⚠️ Erreur, veuillez réessayer</span>
+                <span>Erreur — réessayer</span>
               ) : (
-                <span className="flex items-center gap-2">
+                <>
                   <span>Envoyer la demande</span>
-                  <ArrowRight size={16} />
-                </span>
+                  <ArrowRight size={14} />
+                </>
               )}
             </motion.button>
           </motion.form>
         </AnimatedSection>
 
+        {/* Réseaux sociaux */}
         <AnimatedSection>
           <motion.div
             variants={fadeUp}
             custom={0.2}
-            className="mt-16 flex flex-col items-center gap-6"
+            style={{
+              marginTop: '4rem',
+              paddingTop: '2.5rem',
+              borderTop: `1px solid ${t.borderSubtle}`,
+              display: 'flex',
+              flexDirection: 'column' as const,
+              alignItems: 'flex-start',
+              gap: '1.25rem',
+            }}
           >
-            <p
-              className="text-sm font-medium tracking-wide uppercase"
-              style={{ color: t.textTertiary }}
-            >
+            <span style={{
+              fontFamily: 'var(--font-title)',
+              fontSize: '0.58rem',
+              letterSpacing: '0.2em',
+              textTransform: 'uppercase',
+              color: 'rgba(244,241,234,0.28)',
+            }}>
               Ou contactez-nous via
-            </p>
-            <div className="flex items-center gap-4">
+            </span>
+            <div style={{ display: 'flex', gap: '1rem' }}>
               {SOCIAL_LINKS.map(social => (
                 <a
                   key={social.name}
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-12 h-12 rounded-full flex items-center justify-center transition-all hover:-translate-y-1"
+                  aria-label={social.name}
                   style={{
-                    background: t.fillSubtle,
-                    border: `1px solid ${t.borderMedium}`,
-                    color: t.ink,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    width: 40,
+                    height: 40,
+                    border: `1px solid ${t.borderSubtle}`,
+                    color: 'rgba(244,241,234,0.45)',
+                    textDecoration: 'none',
+                    transition: 'color 0.2s, border-color 0.2s',
                   }}
-                  aria-label={`Visiter notre ${social.name}`}
                   onMouseEnter={e => {
-                    e.currentTarget.style.borderColor = t.accent;
                     e.currentTarget.style.color = t.accent;
+                    e.currentTarget.style.borderColor = t.accent;
                   }}
                   onMouseLeave={e => {
-                    e.currentTarget.style.borderColor = t.borderMedium;
-                    e.currentTarget.style.color = t.ink;
+                    e.currentTarget.style.color = 'rgba(244,241,234,0.45)';
+                    e.currentTarget.style.borderColor = t.borderSubtle;
                   }}
                 >
-                  <social.icon size={20} />
+                  <social.icon size={16} />
                 </a>
               ))}
             </div>
