@@ -277,12 +277,10 @@ export const PricingSection: React.FC = () => {
                 {upsells.map((item, i) => (
                   <div
                     key={item.title}
-                    className={`border-b md:border-b-0 ${i < 2 ? 'md:border-r' : ''}`}
+                    className={`border-b md:border-b-0 ${i < 2 ? 'md:border-r' : ''} ${i > 0 ? 'md:pl-7' : ''} ${i < 2 ? 'md:pr-7' : ''}`}
                     style={{
                       paddingTop: '1.5rem',
                       paddingBottom: '1.5rem',
-                      paddingLeft: i === 0 ? 0 : '1.75rem',
-                      paddingRight: i === 2 ? 0 : '1.75rem',
                       borderColor: t.borderSubtle,
                     }}
                   >
