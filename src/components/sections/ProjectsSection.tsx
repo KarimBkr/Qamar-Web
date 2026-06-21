@@ -1,12 +1,12 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, ArrowRight } from 'lucide-react';
+import { ExternalLink, ArrowRight, Check } from 'lucide-react';
 import { fadeUp } from '@/constants/animations';
 import { AnimatedSection } from '@/components/ui/AnimatedSection';
 import { SectionTitle } from '@/components/ui/SectionTitle';
 import { SplitText } from '@/components/ui/SplitText';
 import { LazyVideo } from '@/components/ui/LazyVideo';
-import { projects, allProjectTags } from '@/data/projects';
+import { projects, allProjectTags, agencyCapabilities } from '@/data/projects';
 import { useTheme } from '@/hooks/use-theme';
 import type { Project } from '@/types';
 
@@ -132,6 +132,39 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           {project.summary}
         </motion.p>
 
+        {/* Rôle Qamar Web */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem', marginBottom: '1rem' }}>
+          {project.ourRole.map(role => (
+            <span key={role} style={{
+              fontFamily: 'var(--font-title)', fontSize: '0.48rem', fontWeight: 600,
+              letterSpacing: '0.12em', textTransform: 'uppercase',
+              padding: '0.25rem 0.55rem', borderRadius: 4,
+              color: 'rgba(244,241,234,0.55)',
+              border: `1px solid ${t.borderSubtle}`,
+              background: 'rgba(244,241,234,0.04)',
+            }}>
+              {role}
+            </span>
+          ))}
+        </div>
+
+        {/* Livrables concrets — visible sans ouvrir la modal */}
+        <ul style={{
+          listStyle: 'none', margin: '0 0 1.25rem', padding: 0,
+          display: 'flex', flexDirection: 'column', gap: '0.55rem',
+        }}>
+          {project.cardDeliverables.map(item => (
+            <li key={item} style={{
+              display: 'flex', alignItems: 'flex-start', gap: '0.6rem',
+              fontFamily: 'var(--font-text)', fontSize: '0.88rem',
+              color: 'rgba(244,241,234,0.58)', lineHeight: 1.45,
+            }}>
+              <Check size={13} style={{ color: t.accent, flexShrink: 0, marginTop: 3 }} />
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
+
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '1.25rem' }}>
           {project.tags.slice(0, 5).map(tag => (
             <span key={tag} style={{
@@ -226,8 +259,44 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
           <SectionTitle
             label="Nos Projets"
             title="Réalisations récentes"
-            subtitle="Des sites vitrines aux plateformes e-commerce complètes — chaque projet est pensé pour convertir, se positionner localement et refléter l'excellence de nos clients."
+            subtitle="Chaque projet détaille ce qu'on a livré concrètement — design, développement, SEO, conversion — pour que vous sachiez exactement ce dont nous sommes capables."
           />
+        </AnimatedSection>
+
+        {/* Bandeau compétences agence */}
+        <AnimatedSection>
+          <motion.div variants={fadeUp} custom={0} style={{ marginBottom: '2.5rem' }}>
+            <p style={{
+              fontFamily: 'var(--font-title)', fontSize: '0.55rem', fontWeight: 600,
+              letterSpacing: '0.2em', textTransform: 'uppercase',
+              color: t.accent, marginBottom: '1rem',
+            }}>
+              Ce qu'on sait faire
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: '0.75rem' }}>
+              {agencyCapabilities.map(cap => (
+                <div key={cap.label} style={{
+                  padding: '1rem 1.1rem', borderRadius: 10,
+                  border: `1px solid ${t.borderSubtle}`,
+                  background: 'rgba(244,241,234,0.02)',
+                }}>
+                  <div style={{
+                    fontFamily: 'var(--font-title)', fontSize: '0.65rem', fontWeight: 700,
+                    letterSpacing: '0.1em', textTransform: 'uppercase',
+                    color: '#f4f1ea', marginBottom: '0.35rem',
+                  }}>
+                    {cap.label}
+                  </div>
+                  <div style={{
+                    fontFamily: 'var(--font-text)', fontSize: '0.85rem', fontStyle: 'italic',
+                    color: 'rgba(244,241,234,0.42)', lineHeight: 1.4,
+                  }}>
+                    {cap.desc}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </AnimatedSection>
 
         {/* Filtres par tag */}

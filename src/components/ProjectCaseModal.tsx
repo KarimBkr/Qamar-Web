@@ -157,9 +157,23 @@ export const ProjectCaseModal: React.FC<ProjectCaseModalProps> = ({ project, onC
                 <p style={{
                   fontFamily: 'var(--font-title)', fontSize: '0.58rem',
                   letterSpacing: '0.14em', textTransform: 'uppercase', color: t.accent,
+                  marginBottom: '0.75rem',
                 }}>
                   {project.type}
                 </p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+                  {project.ourRole.map(role => (
+                    <span key={role} style={{
+                      fontFamily: 'var(--font-title)', fontSize: '0.48rem', fontWeight: 600,
+                      letterSpacing: '0.12em', textTransform: 'uppercase',
+                      padding: '0.25rem 0.55rem', borderRadius: 4,
+                      color: 'rgba(244,241,234,0.55)',
+                      border: `1px solid ${t.borderSubtle}`,
+                    }}>
+                      {role}
+                    </span>
+                  ))}
+                </div>
               </div>
 
               {/* Métriques */}
@@ -224,7 +238,54 @@ export const ProjectCaseModal: React.FC<ProjectCaseModalProps> = ({ project, onC
                   </ul>
                 </ModalSection>
 
-                <ModalSection title="Réalisations clés" delay={0.1}>
+                <ModalSection title="Ce qu'on a livré" delay={0.08}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                    {project.caseStudy.deliverables.map(group => (
+                      <div key={group.category}>
+                        <h4 style={{
+                          fontFamily: 'var(--font-title)', fontSize: '0.58rem', fontWeight: 700,
+                          letterSpacing: '0.16em', textTransform: 'uppercase',
+                          color: '#f4f1ea', marginBottom: '0.75rem',
+                          paddingBottom: '0.5rem',
+                          borderBottom: `1px solid ${t.borderSubtle}`,
+                        }}>
+                          {group.category}
+                        </h4>
+                        <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                          {group.items.map(item => (
+                            <li key={item} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.65rem' }}>
+                              <CheckCircle size={13} style={{ color: t.accent, flexShrink: 0, marginTop: 4 }} />
+                              <span style={{
+                                fontFamily: 'var(--font-text)', fontSize: '0.9rem',
+                                color: 'rgba(244,241,234,0.62)', lineHeight: 1.5,
+                              }}>
+                                {item}
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </ModalSection>
+
+                <ModalSection title="Compétences démontrées" delay={0.12}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+                    {project.caseStudy.capabilities.map(cap => (
+                      <div key={cap} style={{
+                        padding: '0.85rem 1rem', borderRadius: 10,
+                        background: `linear-gradient(135deg, rgba(201,136,42,0.1) 0%, rgba(201,136,42,0.03) 100%)`,
+                        border: `1px solid rgba(201,136,42,0.2)`,
+                        fontFamily: 'var(--font-text)', fontSize: '0.92rem',
+                        color: 'rgba(244,241,234,0.72)', lineHeight: 1.45,
+                      }}>
+                        {cap}
+                      </div>
+                    ))}
+                  </div>
+                </ModalSection>
+
+                <ModalSection title="Points forts" delay={0.14}>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {project.caseStudy.highlights.map(h => (
                       <div key={h} style={{

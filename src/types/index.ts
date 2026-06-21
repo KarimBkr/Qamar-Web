@@ -27,6 +27,10 @@ export interface ServiceDetail {
 export interface ProjectCaseStudy {
   context: string;
   objectives: string[];
+  /** Livrables groupés par catégorie — ce qu'on a concrètement livré */
+  deliverables: Array<{ category: string; items: string[] }>;
+  /** Compétences agence démontrées par ce projet */
+  capabilities: string[];
   highlights: string[];
   stack: string[];
   valueProposition: string;
@@ -44,7 +48,6 @@ export interface Project {
   emoji: string;
   image?: string;
   video?: string;
-  /** Images supplémentaires pour le carrousel modal */
   gallery?: string[];
   url?: string;
   slug: string;
@@ -54,7 +57,10 @@ export interface Project {
   tags: string[];
   location?: string;
   featured?: boolean;
-  /** Chiffres clés affichés en haut de l'étude de cas */
+  /** 3–4 livrables visibles directement sur la carte */
+  cardDeliverables: string[];
+  /** Rôle Qamar Web sur le projet */
+  ourRole: string[];
   metrics: ProjectMetric[];
   caseStudy: ProjectCaseStudy;
 }
