@@ -37,8 +37,18 @@ export const Navbar: React.FC<NavbarProps> = ({
   }, [closeMenu]);
 
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    if (menuOpen) {
+      const sw = window.innerWidth - document.documentElement.clientWidth;
+      document.body.style.overflow = 'hidden';
+      if (sw > 0) document.body.style.paddingRight = `${sw}px`;
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    };
   }, [menuOpen]);
 
   return (
@@ -234,13 +244,26 @@ export const Navbar: React.FC<NavbarProps> = ({
               }}>
                 QAMAR<span style={{ color: t.accent }}>.</span>WEB
               </span>
+              {/* Bouton fermer — même taille que le burger (54px) pour aligner les deux headers */}
               <button
                 type="button"
                 onClick={closeMenu}
-                style={{ background: 'none', border: 'none', color: '#f4f1ea', cursor: 'none', padding: 0 }}
-                aria-label="Fermer"
+                aria-label="Fermer le menu"
+                style={{
+                  position: 'relative',
+                  width: 54, height: 54,
+                  borderRadius: '50%',
+                  border: '1px solid rgba(244,241,234,0.28)',
+                  background: 'transparent',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'none',
+                  color: '#f4f1ea',
+                  flexShrink: 0,
+                }}
               >
-                <X size={22} />
+                <X size={20} />
               </button>
             </div>
 

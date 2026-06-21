@@ -4,7 +4,6 @@ import waterplomberieImg from '@/assets/waterplomberie.png';
 import maisonMayssaVideo from '@/assets/maison-mayssa-video.mp4';
 import dysponibleVideo from '@/assets/dys-ponible-video.mp4';
 import lalbicuttzVideo from '@/assets/lalbicuttz-video.mp4';
-import { SplitText } from '@/components/ui/SplitText';
 import { MagneticButton } from '@/components/ui/MagneticButton';
 import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
@@ -167,57 +166,82 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ introComplete = true }
         </div>
 
         <div className="flex flex-col items-center text-center">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={`lbl-${idx}`}
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.45 }}
-              style={{ marginBottom: '2rem' }}
-            >
-              <span style={{
-                fontFamily: 'var(--font-title)',
-                fontSize: '0.58rem',
-                letterSpacing: '0.24em',
-                textTransform: 'uppercase',
-                color: '#C9882A',
-                display: 'block',
-                marginBottom: '0.4rem',
-              }}>
-                {slide.sub}
-              </span>
-              <span style={{
-                fontFamily: 'var(--font-title)',
-                fontSize: '0.7rem',
-                letterSpacing: '0.18em',
-                textTransform: 'uppercase',
-                color: 'rgba(244,241,234,0.55)',
-              }}>
-                {slide.label}
-              </span>
-            </motion.div>
-          </AnimatePresence>
 
-          <SplitText
-            as="h1"
-            text="Tout commence par une conversation."
-            animateOnMount={introComplete}
-            delay={0.2}
+          {/* Services — ce que l'on fait */}
+          <div style={{
+            fontFamily: 'var(--font-title)',
+            fontSize: '0.55rem',
+            fontWeight: 600,
+            letterSpacing: '0.28em',
+            textTransform: 'uppercase',
+            color: 'rgba(244,241,234,0.38)',
+            marginBottom: '1.5rem',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.75rem',
+          }}>
+            <span>Sites web</span>
+            <span style={{ color: '#C9882A', opacity: 0.6 }}>·</span>
+            <span>E-commerce</span>
+            <span style={{ color: '#C9882A', opacity: 0.6 }}>·</span>
+            <span>Applications</span>
+          </div>
+
+          {/* Phrase d'accroche — compétitive et mémorable */}
+          <h1
             style={{
               fontFamily: 'var(--font-text)',
-              fontSize: 'clamp(2rem, 5.5vw, 5rem)',
+              fontSize: 'clamp(2rem, 5vw, 4.75rem)',
               fontWeight: 400,
               fontStyle: 'italic',
               color: '#f4f1ea',
               lineHeight: 1.15,
               letterSpacing: '-0.01em',
-              maxWidth: '16ch',
-              margin: '0 auto',
-              textAlign: 'center',
+              maxWidth: '20ch',
+              margin: 0,
               textShadow: '0 2px 40px rgba(10,10,11,0.8), 0 0 80px rgba(10,10,11,0.6)',
             }}
-          />
+          >
+            Le site web que vos concurrents<br/>
+            auront voulu faire en premier.
+          </h1>
+
+          {/* Projet en cours — contexte discret */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={`lbl-${idx}`}
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.4 }}
+              style={{
+                marginTop: '1.75rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+              }}
+            >
+              <span style={{
+                fontFamily: 'var(--font-title)',
+                fontSize: '0.52rem',
+                letterSpacing: '0.18em',
+                textTransform: 'uppercase',
+                color: '#C9882A',
+              }}>
+                {slide.sub}
+              </span>
+              <span style={{ color: 'rgba(244,241,234,0.2)', fontSize: '0.5rem' }}>—</span>
+              <span style={{
+                fontFamily: 'var(--font-title)',
+                fontSize: '0.52rem',
+                letterSpacing: '0.14em',
+                textTransform: 'uppercase',
+                color: 'rgba(244,241,234,0.4)',
+              }}>
+                {slide.label}
+              </span>
+            </motion.div>
+          </AnimatePresence>
 
           <MagneticButton
             as="a"
@@ -225,7 +249,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ introComplete = true }
             data-cursor="cta"
             strength={0.25}
             style={{
-              marginTop: '2.5rem',
+              marginTop: '2rem',
               fontFamily: 'var(--font-title)',
               fontSize: '0.65rem',
               letterSpacing: '0.22em',

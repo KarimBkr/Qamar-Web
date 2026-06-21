@@ -270,15 +270,20 @@ export const PricingSection: React.FC = () => {
                 </span>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-3">
+              <div
+                className="grid grid-cols-1 md:grid-cols-3"
+                style={{ borderTop: `1px solid ${t.borderSubtle}` }}
+              >
                 {upsells.map((item, i) => (
                   <div
                     key={item.title}
+                    className={`border-b md:border-b-0 ${i < 2 ? 'md:border-r' : ''}`}
                     style={{
-                      padding: '1.5rem 0',
-                      paddingLeft: i > 0 ? '1.75rem' : 0,
-                      paddingRight: i < 2 ? '1.75rem' : 0,
-                      borderLeft: i > 0 ? `1px solid ${t.borderSubtle}` : 'none',
+                      paddingTop: '1.5rem',
+                      paddingBottom: '1.5rem',
+                      paddingLeft: i === 0 ? 0 : '1.75rem',
+                      paddingRight: i === 2 ? 0 : '1.75rem',
+                      borderColor: t.borderSubtle,
                     }}
                   >
                     <div style={{

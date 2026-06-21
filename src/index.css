@@ -172,7 +172,13 @@ a, button { cursor: none; }
   to { stroke-dashoffset: 0; }
 }
 
-/* ─── Custom cursor ──────────────────────────────────────────────── */
+/* ─── Custom cursor — désactivé sur les appareils tactiles ──────── */
+@media (pointer: coarse) {
+  html, body { cursor: auto; }
+  a, button   { cursor: auto; }
+  .cursor-dot, .cursor-ring { display: none !important; }
+}
+
 .cursor-dot {
   pointer-events: none;
   position: fixed;

@@ -20,17 +20,24 @@ export const ProcessSection: React.FC = () => {
           />
         </AnimatedSection>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+        {/* Grille : 1-col (mobile) → 4-col (lg+) — toutes les étapes visuellement égales */}
+        <div
+          className="grid grid-cols-1 lg:grid-cols-4"
+          style={{ borderTop: `1px solid ${t.borderSubtle}` }}
+        >
           {processSteps.map((step, i) => (
             <AnimatedSection key={step.num}>
               <motion.div
                 variants={fadeUp}
                 custom={i * 0.08}
+                className={[
+                  'border-b',
+                  i < 3 ? 'lg:border-r' : '',
+                  'lg:border-b-0',
+                ].join(' ')}
                 style={{
-                  padding: '2rem 2rem 2rem 0',
-                  paddingLeft: i > 0 ? '2rem' : 0,
-                  borderTop: `1px solid ${t.borderSubtle}`,
-                  borderLeft: i > 0 ? `1px solid ${t.borderSubtle}` : 'none',
+                  padding: '2rem 1.75rem',
+                  borderColor: t.borderSubtle,
                   height: '100%',
                 }}
               >
