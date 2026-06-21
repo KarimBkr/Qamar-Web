@@ -45,11 +45,13 @@ export const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) =>
       setTimeout(() => { setPhase('logo'); setLogoStep('drawing'); }, 2300),
       setTimeout(() => setLogoStep('filled'), 4400),
       setTimeout(() => setPhase('tagline'), 4700),
-      setTimeout(() => setPhase('exit'),    7000),
-      setTimeout(() => setVisible(false),   7000),
+      // onComplete au début du wipe — le hero content commence son animation
+      // pendant que le rideau se joue (0.72s), pas après.
+      setTimeout(() => { setPhase('exit'); onComplete(); }, 7000),
+      setTimeout(() => setVisible(false), 7000),
     ];
     return () => t.forEach(clearTimeout);
-  }, []);
+  }, [onComplete]);
 
   const isConverged = phase !== 'grid';
   const logoVisible = phase === 'logo' || phase === 'tagline' || phase === 'exit';
@@ -57,7 +59,7 @@ export const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) =>
   const filled      = logoStep === 'filled';
 
   return (
-    <AnimatePresence onExitComplete={onComplete}>
+    <AnimatePresence>
       {visible && (
         <motion.div
           key="intro"

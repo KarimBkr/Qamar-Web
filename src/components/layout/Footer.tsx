@@ -170,7 +170,15 @@ export const Footer: React.FC = () => {
                 letterSpacing: '0.04em',
                 color: 'rgba(244,241,234,0.28)',
               }}>
-                +33 (0)6 XX XX XX XX
+                06 61 52 77 54
+              </li>
+              <li style={{
+                fontFamily: 'var(--font-title)',
+                fontSize: '0.78rem',
+                letterSpacing: '0.04em',
+                color: 'rgba(244,241,234,0.28)',
+              }}>
+                06 27 09 77 24
               </li>
               <li style={{
                 fontFamily: 'var(--font-title)',

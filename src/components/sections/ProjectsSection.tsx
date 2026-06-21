@@ -27,7 +27,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
   const media = (
     <motion.div
-      layoutId={isModalOpen ? undefined : `project-media-${project.slug}`}
       style={{
         position: 'relative',
         width: '100%',

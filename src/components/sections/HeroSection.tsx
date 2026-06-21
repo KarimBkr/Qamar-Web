@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import waterplomberieImg from '@/assets/waterplomberie.png';
 import maisonMayssaVideo from '@/assets/maison-mayssa-video.mp4';
 import dysponibleVideo from '@/assets/dys-ponible-video.mp4';
 import lalbicuttzVideo from '@/assets/lalbicuttz-video.mp4';
 import { MagneticButton } from '@/components/ui/MagneticButton';
-import { useReducedMotion } from '@/hooks/use-reduced-motion';
 
 interface Slide {
   type: 'image' | 'video';
@@ -27,23 +26,6 @@ interface HeroSectionProps {
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ introComplete = true }) => {
   const [idx, setIdx] = useState(0);
-  const sectionRef = useRef<HTMLElement>(null);
-  const reduced = useReducedMotion();
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start start', 'end start'],
-  });
-
-  const bgScale = useTransform(scrollYProgress, [0, 1], reduced ? [1, 1] : [1, 1.18]);
-  const bgFilter = useTransform(
-    scrollYProgress,
-    [0, 0.85],
-    ['grayscale(60%) brightness(0.55)', 'grayscale(60%) brightness(0.30)']
-  );
-  const contentY = useTransform(scrollYProgress, [0, 1], reduced ? [0, 0] : [0, -100]);
-  const contentOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
-  const overlayOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 1.4]);
 
   const next = useCallback(() => setIdx(i => (i + 1) % SLIDES.length), []);
 
@@ -58,19 +40,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ introComplete = true }
 
   return (
     <section
-      ref={sectionRef}
       id="accueil"
       className="relative w-full overflow-hidden"
       style={{ height: '100svh', minHeight: 600 }}
     >
-      {/* Background slides — parallax scale au scroll */}
-      <motion.div
-        style={{
-          position: 'absolute',
-          inset: '-4%',
-          scale: reduced ? 1 : bgScale,
-        }}
-      >
+      {/* Background slides */}
+      <div style={{ position: 'absolute', inset: 0 }}>
         <AnimatePresence mode="sync">
           <motion.div
             key={idx}
@@ -79,13 +54,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ introComplete = true }
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.4, ease: 'easeInOut' }}
-            style={{ filter: reduced ? 'grayscale(60%) brightness(0.55)' : bgFilter }}
           >
             {slide.type === 'video' ? (
               <video
                 src={slide.src}
                 autoPlay loop muted playsInline preload="auto"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                style={{
+                  width: '100%', height: '100%', objectFit: 'cover',
+                  filter: 'grayscale(60%) brightness(0.55)',
+                }}
               />
             ) : (
               <img
@@ -95,15 +72,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ introComplete = true }
                   width: '100%', height: '100%',
                   objectFit: 'cover',
                   objectPosition: 'center top',
+                  filter: 'grayscale(60%) brightness(0.55)',
                 }}
               />
             )}
           </motion.div>
         </AnimatePresence>
-      </motion.div>
+      </div>
 
-      {/* Overlay — s'intensifie au scroll */}
-      <motion.div
+      {/* Overlay gradient — fixe, pas de repaint */}
+      <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background: [
@@ -111,7 +89,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ introComplete = true }
             'linear-gradient(to bottom, rgba(10,10,11,0.50) 0%, rgba(10,10,11,0.10) 35%, rgba(10,10,11,0.15) 65%, rgba(10,10,11,0.65) 100%)',
           ].join(', '),
           zIndex: 1,
-          opacity: overlayOpacity,
         }}
       />
 
@@ -126,10 +103,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ introComplete = true }
         }}
       />
 
-      {/* Content — monte et disparaît au scroll */}
+      {/* Content */}
       <motion.div
         className="absolute inset-0 flex flex-col justify-between px-6 md:px-12 py-8 md:py-10"
-        style={{ zIndex: 3, y: contentY, opacity: contentOpacity }}
+        style={{ zIndex: 3 }}
         initial={introComplete ? { opacity: 0, y: 24 } : false}
         animate={introComplete ? { opacity: 1, y: 0 } : undefined}
         transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}

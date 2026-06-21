@@ -8,13 +8,9 @@ interface LazyVideoProps {
   autoPlay?: boolean;
 }
 
-/** Vidéo chargée uniquement quand visible dans le viewport. */
+/** Vidéo chargée et lue uniquement quand visible — pause automatique hors viewport. */
 export const LazyVideo: React.FC<LazyVideoProps> = ({
-  src,
-  poster,
-  className = '',
-  style,
-  autoPlay = true,
+  src, poster, className = '', style, autoPlay = true,
 }) => {
   const ref = useRef<HTMLVideoElement>(null);
   const [visible, setVisible] = useState(false);
@@ -22,19 +18,21 @@ export const LazyVideo: React.FC<LazyVideoProps> = ({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
     const io = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
+      ([entry]) => {
+        setVisible(entry.isIntersecting);
+        if (autoPlay) {
+          if (entry.isIntersecting) el.play().catch(() => {});
+          else el.pause();
+        }
+      },
       { rootMargin: '120px' }
     );
+
     io.observe(el);
     return () => io.disconnect();
-  }, []);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || !visible) return;
-    if (autoPlay) el.play().catch(() => {});
-  }, [visible, autoPlay]);
+  }, [autoPlay]);
 
   return (
     <video
